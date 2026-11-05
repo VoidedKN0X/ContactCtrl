@@ -4,6 +4,24 @@ What changed in each ContactCtrl release. Every release on the [Releases page](h
 
 To publish a new version: bump `versionCode` and `versionName` in `app/build.gradle.kts`, add a section here, and push to `main`. Pushes without a version bump only build; they don't make a release.
 
+## v0.1.2 (2026-11-05)
+
+A small security update. Contacts, settings and the app lock are unchanged.
+
+### Security
+
+- **.vcf files from other apps only as shared links.** Opening a .vcf file from another app still imports it, but ContactCtrl now only accepts the file as a `content://` link the other app shares with it (which is how file managers, mail and chat apps send files). Plain `file://` paths are refused: ContactCtrl has no storage permission, so such a path could only have pointed into ContactCtrl's own private files.
+
+### Privacy
+
+- **No debug logging in release builds.** Debug, verbose and info messages from the libraries ContactCtrl uses are now stripped from the app, so nothing can end up in the phone's system log. ContactCtrl's own code already logged nothing.
+
+### Project
+
+- The build now also checks that the Gradle wrapper is an official Gradle release before building.
+- `.gitignore` also covers `google-services.json`, so it can't be committed by accident.
+- README: every permission in the app is listed with its Android name and what it's for, including the "dynamic receiver" permission AndroidX adds, and the Ctrl series list now has all 28 apps.
+
 ## v0.1.1 (2026-11-05)
 
 ### Fixed

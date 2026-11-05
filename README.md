@@ -59,7 +59,7 @@ Settings and About are behind your profile picture at the top right of every tab
 ## Is it safe to install?
 
 - **Open source.** All of ContactCtrl's code is in this repo, under the GPL-3.0 licence. Anyone can read it.
-- **Built by GitHub, not on a personal computer.** Every release on the Releases page is built by [the build workflow](.github/workflows/build.yml) on GitHub Actions, straight from the code in this repo. Each build also checks that the app has no network permission and no Google libraries.
+- **Built by GitHub, not on a personal computer.** Every release on the Releases page is built by [the build workflow](.github/workflows/build.yml) on GitHub Actions, straight from the code in this repo. Each build also checks that the Gradle wrapper is an official Gradle release, that the app has no network permission and that it has no Google libraries.
 - **Always signed with the same key.** Android refuses to install an update signed with a different key over ContactCtrl, and the CtrlF-Droid repo only accepts APKs signed with this key. The SHA-256 fingerprint of ContactCtrl's signing certificate is:
 
   ```
@@ -72,10 +72,12 @@ Settings and About are behind your profile picture at the top right of every tab
 
 | Permission | What ContactCtrl uses it for |
 | --- | --- |
-| Read your contacts | Showing and searching your contacts. |
-| Modify your contacts | Adding, editing, favouriting, importing and deleting contacts when you ask. |
-| Directly call phone numbers | Optional: tapping a number calls it straight away. Without it, numbers open in your phone app first. Turn this off in Settings with *Tap a number to call*. |
-| Use biometric hardware | Optional fingerprint unlock for the app lock. |
+| Read your contacts (`READ_CONTACTS`) | Showing and searching your contacts. |
+| Modify your contacts (`WRITE_CONTACTS`) | Adding, editing, favouriting, importing and deleting contacts when you ask. |
+| Directly call phone numbers (`CALL_PHONE`) | Optional: tapping a number calls it straight away. Without it, numbers open in your phone app first. Turn this off in Settings with *Tap a number to call*. |
+| Use biometric hardware (`USE_BIOMETRIC`) | Optional fingerprint unlock for the app lock. |
+
+Android also lists a "dynamic receiver" permission (`DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`) that AndroidX adds to every app so only ContactCtrl itself can send it internal broadcasts; it gives the app no access to anything. ContactCtrl has no internet, location, storage, microphone or camera permissions.
 
 See [Privacy](#privacy) for what happens to your data.
 
@@ -100,6 +102,7 @@ Turn it on under **Settings > Privacy and security > App lock** (tap your profil
 - Your contacts stay in Android's contacts storage and in the accounts you chose. ContactCtrl keeps no copy of them; its own files hold only its settings.
 - A contact you share becomes a .vcf file in ContactCtrl's private cache, readable only by the app you share it with, and only for that share.
 - Exporting writes a file only to the place you choose. Nothing is uploaded.
+- Other apps can hand ContactCtrl a .vcf file to import only as a `content://` link they share with it; ContactCtrl always shows what's in the file and imports nothing until you tap the Import button.
 - Copied numbers and addresses are marked as sensitive, so Android 13+ doesn't show them in the clipboard preview.
 - ContactCtrl is left out of Android's cloud backup and its phone-to-phone transfer.
 - The Support, Report a bug, Source code and Licence links on the You page open in your browser, only when you tap them.
@@ -158,6 +161,7 @@ Native Android apps for self-hosted services and everyday tools, all with the sa
 | [PaperCtrl](https://github.com/VoidedKN0X/PaperCtrl) | Scan and browse documents on Paperless-ngx |
 | [PrintCtrl](https://github.com/VoidedKN0X/PrintCtrl) | Bambu Lab printers through Bambuddy, and Spoolman spools |
 | [ProxCtrl](https://github.com/VoidedKN0X/ProxCtrl) | Manage your Proxmox VE server |
+| [RecorderCtrl](https://github.com/VoidedKN0X/RecorderCtrl) | Private, offline voice recorder |
 | [RideCtrl](https://github.com/VoidedKN0X/RideCtrl) | Offline maintenance, fuel and mod log for your vehicles |
 | [SeerrCtrl](https://github.com/VoidedKN0X/SeerrCtrl) | Request movies and shows on Seerr / Jellyseerr |
 | [SumCtrl](https://github.com/VoidedKN0X/SumCtrl) | Offline calculator, unit converter and work tools |

@@ -35,7 +35,9 @@ sealed interface Launch {
             return when (intent.action) {
                 Intent.ACTION_VIEW -> when {
                     data == null -> null
-                    isVCard(intent) -> Import(data)
+                    // Only content:// links. ContactCtrl has no storage permission, so a file:// path could only
+                    // point into its own private files.
+                    isVCard(intent) -> if (data.scheme.equals("content", ignoreCase = true)) Import(data) else null
                     data.authority == ContactsContract.AUTHORITY -> View(data)
                     else -> null
                 }
