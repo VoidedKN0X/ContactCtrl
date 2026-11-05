@@ -8,6 +8,7 @@ Contacts app in the VKNXWorks Ctrl series. Kotlin, Jetpack Compose, Material 3, 
 - `data/contacts/ContactWriter.kt`: saves edits as a diff of data rows, only in raw contacts whose account syncs changes back (`Accounts.isWritable`).
 - `data/contacts/VCard.kt`: vCard 2.1/3.0/4.0 parser for import; export uses the provider's own vCard.
 - `Launch.kt`: parses intents from other apps (VIEW, QUICK_CONTACT, INSERT, INSERT_OR_EDIT, EDIT, SHOW_OR_CREATE_CONTACT, .vcf files).
+- `ImportActivity.kt`: takes .vcf links from other apps (`requireContentUriPermissionFromCaller="read"`, so Android 15+ refuses links the sender can't read) and hands them to MainActivity.
 - `EditActivity.kt`: add/edit for other apps (not single-task, so the caller gets the result). `PickerActivity.kt`: PICK / GET_CONTENT pickers.
 
 ## Hard rules
@@ -20,6 +21,10 @@ Contacts app in the VKNXWorks Ctrl series. Kotlin, Jetpack Compose, Material 3, 
 - Must work as a normal user app on any ROM (Android 13+), not only when built into the system.
 - Never write to raw contacts of read-only accounts (messengers), and never rewrite rows that didn't change.
 - Pickers return exactly one row URI with a read grant; never return more than the user tapped.
+
+## Dependency verification
+
+Gradle checks every downloaded library and plugin against the SHA-256 checksums in `gradle/verification-metadata.xml` (checksums only, no PGP). When a dependency, plugin or Gradle version changes, start the `verification-metadata.yml` workflow (`gh api -X POST repos/VoidedKN0X/ContactCtrl/actions/workflows/verification-metadata.yml/dispatches -f ref=main`), take the file from its log (between the BEGIN/END markers, `base64 -d | gunzip`), check the diff (only Maven Central, Google's Maven and the Gradle plugin portal) and commit it in the same push as the change. Never turn verification off or make it lenient.
 
 ## Releasing
 
