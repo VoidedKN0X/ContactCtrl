@@ -4,6 +4,12 @@ What changed in each ContactCtrl release. Every release on the [Releases page](h
 
 To publish a new version: bump `versionCode` and `versionName` in `app/build.gradle.kts`, add a section here, and push to `main`. Pushes without a version bump only build; they don't make a release.
 
+## v0.1.1 (2026-11-05)
+
+### Fixed
+
+- Opening a contact, a phone number link or a .vcf file from another app while ContactCtrl was fully closed could close the app instead of showing it. It now waits until it's ready and then opens what was asked for.
+
 ## v0.1.0 (2026-11-05)
 
 The first release of ContactCtrl: a private, offline contacts app in the Ctrl series, made to replace your phone's contacts app on any Android 13+ phone.

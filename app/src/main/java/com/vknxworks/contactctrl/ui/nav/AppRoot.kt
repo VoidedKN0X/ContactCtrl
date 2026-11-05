@@ -46,6 +46,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.first
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -112,6 +113,8 @@ private fun MainScaffold() {
     val pending by c.pending.collectAsStateWithLifecycle()
     LaunchedEffect(pending) {
         val launch = pending ?: return@LaunchedEffect
+        // Opened by another app while closed: wait until the screens exist before opening one.
+        navController.currentBackStackEntryFlow.first()
         c.pending.value = null
         when (launch) {
             is Launch.View, is Launch.Edit -> {
