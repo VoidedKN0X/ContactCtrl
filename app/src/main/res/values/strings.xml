@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Shell texts for this app -->
+    <string name="settings_subtitle">List, new contacts, import, export and privacy</string>
+    <string name="app_lock_subtitle">Ask for an app PIN (and optionally your fingerprint) when opening ContactCtrl</string>
+    <string name="app_lock_footer">ContactCtrl works fully offline: it has no internet permission, analytics or tracking. Your contacts stay in your phone\'s own contacts storage and in the accounts you chose.</string>
+    <string name="lock_prompt_subtitle">Your contacts</string>
+    <string name="lock_forgot_body">The PIN can\'t be recovered. ContactCtrl will reset its own settings and turn the app lock off. Your contacts are not deleted.</string>
+
+    <!-- Tabs -->
+    <string name="tab_contacts">Contacts</string>
+    <string name="tab_favourites">Favourites</string>
+    <plurals name="contact_count">
+        <item quantity="one">%d contact</item>
+        <item quantity="other">%d contacts</item>
+    </plurals>
+
+    <!-- Permission -->
+    <string name="perm_title">Allow access to your contacts</string>
+    <string name="perm_body">ContactCtrl shows, adds and edits the contacts stored on this phone and in your accounts. Nothing leaves the phone.</string>
+    <string name="perm_body_settings">Contacts access is turned off for ContactCtrl. Turn on Contacts in the app\'s permissions to use it.</string>
+    <string name="perm_allow">Allow access</string>
+    <string name="perm_open_settings">Open app settings</string>
+
+    <!-- List -->
+    <string name="search_hint">Search names, numbers and emails</string>
+    <string name="search_none">Nothing found for “%1$s”</string>
+    <string name="empty_title">No contacts yet</string>
+    <string name="empty_body">Add one with the + button, or import a .vcf file from Settings.</string>
+    <string name="add_contact">Add contact</string>
+    <string name="fav_empty">No favourites yet</string>
+    <string name="fav_empty_body">Open a contact and tap the star to keep them here.</string>
+    <plurals name="selected_count">
+        <item quantity="one">%d selected</item>
+        <item quantity="other">%d selected</item>
+    </plurals>
+    <string name="favourite_toggle">Add or remove favourites</string>
+    <string name="share">Share</string>
+    <string name="share_failed">Couldn\'t share the contact</string>
+    <string name="delete">Delete</string>
+    <string name="delete_title">Delete %1$s?</string>
+    <plurals name="delete_many_title">
+        <item quantity="one">Delete %d contact?</item>
+        <item quantity="other">Delete %d contacts?</item>
+    </plurals>
+    <string name="delete_body">They\'re removed from this phone and from every account they\'re stored in. This can\'t be undone.</string>
+    <string name="delete_failed">Couldn\'t delete the contact</string>
+
+    <!-- Contact -->
+    <string name="contact_not_found">This contact doesn\'t exist any more</string>
+    <string name="favourite">Add to favourites</string>
+    <string name="unfavourite">Remove from favourites</string>
+    <string name="edit">Edit</string>
+    <string name="more">More</string>
+    <string name="action_call">Call</string>
+    <string name="action_text">Message</string>
+    <string name="action_email">Email</string>
+    <string name="group_phones">Phone numbers</string>
+    <string name="group_emails">Email addresses</string>
+    <string name="group_addresses">Addresses</string>
+    <string name="group_about_contact">About</string>
+    <string name="group_dates">Dates</string>
+    <string name="group_websites">Websites</string>
+    <string name="group_more">More</string>
+    <string name="group_name">Name</string>
+    <string name="default_marker">Default</string>
+    <string name="field_work">Work</string>
+    <string name="field_nickname">Nickname</string>
+    <string name="field_note">Notes</string>
+    <string name="field_prefix">Prefix</string>
+    <string name="field_given">First name</string>
+    <string name="field_middle">Middle name</string>
+    <string name="field_family">Last name</string>
+    <string name="field_suffix">Suffix</string>
+    <string name="field_company">Company</string>
+    <string name="field_title">Job title</string>
+    <string name="ringtone">Ringtone</string>
+    <string name="ringtone_default">Phone\'s default ringtone</string>
+    <string name="ringtone_silent">Silent</string>
+    <string name="ringtone_custom">Custom ringtone</string>
+    <string name="read_only">Read-only contact</string>
+    <string name="read_only_body">This contact comes from an app or account that doesn\'t sync changes back (like a messenger), so it can\'t be edited here.</string>
+    <string name="read_only_short">read-only</string>
+    <string name="stored_in">Stored in: %1$s</string>
+    <string name="no_app">No app on this phone can open that</string>
+    <string name="web_homepage">Homepage</string>
+    <string name="web_blog">Blog</string>
+    <string name="web_work">Work</string>
+    <string name="web_home">Personal</string>
+    <string name="web_other">Website</string>
+
+    <!-- Edit -->
+    <string name="new_contact">New contact</string>
+    <string name="edit_contact">Edit contact</string>
+    <string name="edit_empty">Add a name, number or email first</string>
+    <string name="save_failed">Couldn\'t save: %1$s</string>
+    <string name="more_name_fields">More name fields</string>
+    <string name="fewer_name_fields">Fewer name fields</string>
+    <string name="add_phone">Add phone number</string>
+    <string name="add_email">Add email</string>
+    <string name="add_address">Add address</string>
+    <string name="add_date">Add date</string>
+    <string name="add_website">Add website</string>
+    <string name="remove">Remove</string>
+    <string name="label_type">Label</string>
+    <string name="type_custom">Custom label</string>
+    <string name="pick_date">Pick a date</string>
+    <string name="year_unknown">Year unknown</string>
+    <string name="photo_change">Change photo</string>
+    <string name="photo_choose">Choose a photo</string>
+    <string name="photo_remove">Remove photo</string>
+    <string name="photo_failed">Couldn\'t read that picture</string>
+    <string name="discard_title">Discard changes?</string>
+    <string name="discard_body">Your changes to this contact will be lost.</string>
+    <string name="discard">Discard</string>
+    <string name="save_to">Save new contacts to</string>
+    <string name="save_to_footer">Contacts saved to the phone stay on this phone only. A sync account (like DAVx⁵) also keeps them on your own server.</string>
+    <string name="account_device">This phone only</string>
+    <string name="add_to_title">Add to a contact</string>
+
+    <!-- Pickers for other apps -->
+    <string name="pick_contact">Choose a contact</string>
+    <string name="pick_phone">Choose a phone number</string>
+    <string name="pick_email">Choose an email address</string>
+    <string name="pick_address">Choose an address</string>
+
+    <!-- Import / export -->
+    <string name="import_title">Import contacts</string>
+    <string name="import_failed">Couldn\'t read this file</string>
+    <string name="import_none">No contacts found in this file</string>
+    <plurals name="import_found">
+        <item quantity="one">%d contact in this file</item>
+        <item quantity="other">%d contacts in this file</item>
+    </plurals>
+    <string name="import_and_more">and %1$d more</string>
+    <string name="import_footer">Contacts that are already on this phone with the same name and number are skipped when the switch is on.</string>
+    <string name="import_skip_dupes">Skip contacts you already have</string>
+    <string name="import_skip_dupes_sub">Same name and phone number</string>
+    <plurals name="import_button">
+        <item quantity="one">Import %d contact</item>
+        <item quantity="other">Import %d contacts</item>
+    </plurals>
+    <string name="import_progress">Importing %1$d of %2$d</string>
+    <plurals name="import_done">
+        <item quantity="one">%d contact imported</item>
+        <item quantity="other">%d contacts imported</item>
+    </plurals>
+    <plurals name="import_skipped">
+        <item quantity="one">%d was already on this phone and was skipped</item>
+        <item quantity="other">%d were already on this phone and were skipped</item>
+    </plurals>
+    <string name="done">Done</string>
+
+    <!-- Settings -->
+    <string name="group_list">Contact list</string>
+    <string name="name_order">Show names as</string>
+    <string name="name_order_first">First name first</string>
+    <string name="name_order_last">Last name first</string>
+    <string name="sort_by">Sort by</string>
+    <string name="sort_first">First name</string>
+    <string name="sort_last">Last name</string>
+    <string name="show_numbers">Show phone numbers</string>
+    <string name="show_numbers_sub">Each contact\'s number under the name in the list</string>
+    <string name="tap_to_call">Tap a number to call</string>
+    <string name="tap_to_call_sub">Calls straight away. Off: the number opens in your phone app first</string>
+    <string name="group_new_contacts">New contacts</string>
+    <string name="group_import_export">Import and export</string>
+    <string name="import_export_footer">A .vcf file works with every contacts app and phone. Export makes a file you choose the place of; nothing is uploaded.</string>
+    <string name="import_vcf">Import from a .vcf file</string>
+    <string name="import_vcf_sub">Add the contacts in a file from another phone or app</string>
+    <string name="export_vcf">Export all contacts</string>
+    <string name="export_vcf_sub">Save every contact in one .vcf file</string>
+    <string name="export_running">Exporting…</string>
+    <string name="export_failed">Couldn\'t export the contacts</string>
+    <plurals name="export_done">
+        <item quantity="one">%d contact exported</item>
+        <item quantity="other">%d contacts exported</item>
+    </plurals>
+</resources>
