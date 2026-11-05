@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
-import android.os.Build
 import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -132,9 +131,7 @@ fun DetailScreen(id: Long, key: String) {
     val ringtonePicker = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
         if (res.resultCode == Activity.RESULT_OK) {
             val d = detail ?: return@rememberLauncherForActivityResult
-            @Suppress("DEPRECATION")
-            val picked: Uri? = if (Build.VERSION.SDK_INT >= 33) res.data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, Uri::class.java)
-            else res.data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+            val picked: Uri? = res.data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, Uri::class.java)
             scope.launch { c.writer.setRingtone(d.id, d.lookupKey, picked?.toString()) }
         }
     }

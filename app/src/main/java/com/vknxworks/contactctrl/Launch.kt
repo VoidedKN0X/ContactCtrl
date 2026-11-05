@@ -3,7 +3,6 @@ package com.vknxworks.contactctrl
 import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.ContactsContract.CommonDataKinds.Event
@@ -100,9 +99,7 @@ sealed interface Launch {
 
             // Full rows (ContactsContract.Intents.Insert.DATA): apps like messengers and browsers send these.
             val rows: List<ContentValues> = runCatching {
-                @Suppress("DEPRECATION")
-                if (Build.VERSION.SDK_INT >= 33) e.getParcelableArrayList(ContactsContract.Intents.Insert.DATA, ContentValues::class.java)
-                else e.getParcelableArrayList(ContactsContract.Intents.Insert.DATA)
+                e.getParcelableArrayList(ContactsContract.Intents.Insert.DATA, ContentValues::class.java)
             }.getOrNull().orEmpty().take(200)
             for (v in rows) {
                 val d1 = v.getAsString("data1")?.trim().orEmpty()

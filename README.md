@@ -2,7 +2,7 @@
 
 **A private, offline contacts app that replaces your phone's contacts app.**
 
-[![Latest release](https://img.shields.io/github/v/release/VoidedKN0X/ContactCtrl?label=download)](https://github.com/VoidedKN0X/ContactCtrl/releases/latest) ![Android 13+](https://img.shields.io/badge/Android-13%2B-3DDC84?logo=android&logoColor=white) [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE) ![Telemetry-free](https://img.shields.io/badge/telemetry-none-brightgreen) ![Offline](https://img.shields.io/badge/internet-none-brightgreen) [![Sponsor](https://img.shields.io/badge/sponsor-GitHub-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/VoidedKN0X)
+[![Latest release](https://img.shields.io/github/v/release/VoidedKN0X/ContactCtrl?label=download)](https://github.com/VoidedKN0X/ContactCtrl/releases/latest) ![Android 15+](https://img.shields.io/badge/Android-15%2B-3DDC84?logo=android&logoColor=white) [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE) ![Telemetry-free](https://img.shields.io/badge/telemetry-none-brightgreen) ![Offline](https://img.shields.io/badge/internet-none-brightgreen) [![Sponsor](https://img.shields.io/badge/sponsor-GitHub-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/VoidedKN0X)
 
 ContactCtrl shows, searches, adds and edits the contacts on your phone and in your accounts (the phone itself, DAVx⁵, Exchange and others), imports and exports .vcf files, and gives other apps the contact pickers they expect. It never goes online and keeps no copy of your contacts of its own.
 
@@ -28,7 +28,7 @@ Part of the [Ctrl series](#the-ctrl-series) by VKNXWorks.
 
 ## Requirements
 
-- Android 13 or newer, on a 64-bit ARM phone (nearly every phone from the last several years)
+- Android 15 or newer, on a 64-bit ARM phone (nearly every phone from the last several years)
 - Works on any Android ROM as a normal app: stock Android, LineageOS, GrapheneOS, CalyxOS, /e/OS and the phone makers' own systems. It doesn't need root or to be built into the system.
 - **Google-free and de-Googled:** no Google Play services, Firebase or other Google libraries, and the app never contacts Google.
 
@@ -106,7 +106,7 @@ Turn it on under **Settings > Privacy and security > App lock** (tap your profil
 - A contact you share becomes a .vcf file in ContactCtrl's private cache, readable only by the app you share it with, and only for that share.
 - Exporting writes a file only to the place you choose. Nothing is uploaded.
 - Other apps can hand ContactCtrl a .vcf file to import only as a `content://` link they share with it; ContactCtrl always shows what's in the file and imports nothing until you tap the Import button.
-- Copied numbers and addresses are marked as sensitive, so Android 13+ doesn't show them in the clipboard preview.
+- Copied numbers and addresses are marked as sensitive, so Android doesn't show them in the clipboard preview.
 - ContactCtrl is left out of Android's cloud backup and its phone-to-phone transfer.
 - The Support, Report a bug, Source code and Licence links on the You page open in your browser, only when you tap them.
 

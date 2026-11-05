@@ -18,7 +18,7 @@ Contacts app in the VKNXWorks Ctrl series. Kotlin, Jetpack Compose, Material 3, 
 - **Telemetry-free:** no analytics or crash reporting.
 - arm64-v8a only. Every user-facing string goes in `strings.xml` (shared Ctrl strings in `strings_ctrl.xml`).
 - Settings open only from the profile picture. No settings tab, menu or gear icon, no You tab.
-- Must work as a normal user app on any ROM (Android 13+), not only when built into the system.
+- Must work as a normal user app on any ROM (Android 15+), not only when built into the system.
 - Never write to raw contacts of read-only accounts (messengers), and never rewrite rows that didn't change.
 - Pickers return exactly one row URI with a read grant; never return more than the user tapped.
 
