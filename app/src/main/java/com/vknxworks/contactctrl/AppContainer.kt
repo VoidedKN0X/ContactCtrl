@@ -24,6 +24,9 @@ class AppContainer(val context: Context) {
     val contacts = ContactsRepository(context, appScope)
     val writer = ContactWriter(context.contentResolver)
 
+    /** Merging and separating duplicates, and the "not duplicates" answers. */
+    val merger by lazy { com.vknxworks.contactctrl.data.duplicates.Merger(context, appScope) }
+
     /** What another app asked to open; the main screen picks it up. */
     val pending = MutableStateFlow<Launch?>(null)
 

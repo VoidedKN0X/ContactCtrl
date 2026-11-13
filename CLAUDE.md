@@ -9,6 +9,8 @@ Contacts app in the VKNXWorks Ctrl series. Kotlin, Jetpack Compose, Material 3, 
 - `data/contacts/VCard.kt`: vCard 2.1/3.0/4.0 parser for import; export uses the provider's own vCard.
 - `Launch.kt`: parses intents from other apps (VIEW, QUICK_CONTACT, INSERT, INSERT_OR_EDIT, EDIT, SHOW_OR_CREATE_CONTACT, .vcf files).
 - `ImportActivity.kt`: takes .vcf links from other apps (`requireContentUriPermissionFromCaller="read"`, so Android 15+ refuses links the sender can't read) and hands them to MainActivity.
+- `data/duplicates/`: `PhoneNormalizer` (E.164-like, small calling-code/trunk table, no libphonenumber) and `DuplicateFinder` (phone/email/name groups, union-find, "not duplicates" pairs), plain Kotlin with unit tests in `app/src/test`; `Merger` joins and splits contacts only through `AggregationExceptions` (KEEP_TOGETHER / KEEP_SEPARATE, never deletes) and keeps merge records and dismissed pairs in DataStore. `ui/contacts/DuplicatesScreen.kt`: the groups, Merge, Not duplicates and Undo.
+- Unit tests: `gradlew testDebugUnitTest` (needs JDK 17, the build's toolchain).
 - `EditActivity.kt`: add/edit for other apps (not single-task, so the caller gets the result). `PickerActivity.kt`: PICK / GET_CONTENT pickers.
 
 ## Hard rules
@@ -21,6 +23,7 @@ Contacts app in the VKNXWorks Ctrl series. Kotlin, Jetpack Compose, Material 3, 
 - Must work as a normal user app on any ROM (Android 15+), not only when built into the system.
 - Never write to raw contacts of read-only accounts (messengers), and never rewrite rows that didn't change.
 - Pickers return exactly one row URI with a read grant; never return more than the user tapped.
+- Merging contacts only sets aggregation exceptions; it never deletes or rewrites raw contacts or their data, and every merge can be undone (KEEP_SEPARATE).
 
 ## Dependency verification
 

@@ -69,6 +69,8 @@ import com.vknxworks.contactctrl.ui.components.TabTitle
 import com.vknxworks.contactctrl.ui.components.bottomClearance
 import com.vknxworks.contactctrl.ui.components.topDivider
 import com.vknxworks.contactctrl.ui.nav.DetailRoute
+import com.vknxworks.contactctrl.ui.nav.DuplicatesRoute
+import androidx.compose.material.icons.automirrored.outlined.CallMerge
 import com.vknxworks.contactctrl.ui.nav.EditRoute
 import com.vknxworks.contactctrl.ui.nav.LocalNavigator
 import com.vknxworks.contactctrl.ui.theme.CtrlColors
@@ -143,6 +145,9 @@ fun ContactsScreen() {
                 stringResource(R.string.tab_contacts),
                 label = if (loaded) pluralStringResource(R.plurals.contact_count, all.size, all.size) else null,
                 trailing = {
+                    if (all.size >= 2) {
+                        CtrlSquareButton(Icons.AutoMirrored.Outlined.CallMerge, stringResource(R.string.find_duplicates), onClick = { nav.navigate(DuplicatesRoute) })
+                    }
                     CtrlSquareButton(Icons.Outlined.Add, stringResource(R.string.add_contact), onClick = { nav.navigate(EditRoute()) })
                 },
             )

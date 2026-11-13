@@ -154,6 +154,38 @@
     </plurals>
     <string name="done">Done</string>
 
+    <!-- Duplicates and merging -->
+    <string name="find_duplicates">Find duplicates</string>
+    <string name="duplicates_title">Duplicates</string>
+    <string name="duplicates_none">No duplicates found</string>
+    <string name="duplicates_none_body">No contacts share a phone number, an email address or a name, apart from the ones you marked as not duplicates.</string>
+    <string name="duplicates_intro">These contacts share a phone number, an email address or a name. Merge joins them into one contact: nothing is deleted, every account keeps its own copy, and you can separate them again from the contact\'s page.</string>
+    <string name="reason_phone">Same number · %1$s</string>
+    <string name="reason_email">Same email · %1$s</string>
+    <string name="reason_name">Same name · %1$s</string>
+    <plurals name="reason_more">
+        <item quantity="one">And %1$d more thing in common</item>
+        <item quantity="other">And %1$d more things in common</item>
+    </plurals>
+    <string name="merge">Merge</string>
+    <string name="not_duplicates">Not duplicates</string>
+    <string name="merge_read_only_note">%1$s contacts stay as they are: merging only shows them together with the others.</string>
+    <string name="merge_failed">Couldn\'t merge these contacts</string>
+    <string name="merged_into">Merged into %1$s</string>
+    <string name="undo">Undo</string>
+    <string name="close">Close</string>
+    <string name="separated">Separated again</string>
+    <string name="separate_failed">Couldn\'t separate the contacts</string>
+    <string name="separate">Separate merged contacts</string>
+    <plurals name="separate_sub">
+        <item quantity="one">Merged in ContactCtrl from %1$d contact; splits it back</item>
+        <item quantity="other">Merged in ContactCtrl from %1$d contacts; splits them back</item>
+    </plurals>
+    <plurals name="duplicates_found">
+        <item quantity="one">%1$d group of likely duplicates.</item>
+        <item quantity="other">%1$d groups of likely duplicates.</item>
+    </plurals>
+
     <!-- Settings -->
     <string name="group_list">Contact list</string>
     <string name="name_order">Show names as</string>

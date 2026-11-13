@@ -218,6 +218,7 @@ private fun AppNavHost(navController: NavHostController) {
         composable<EditRoute> { val r = it.toRoute<EditRoute>(); Gate { EditScreen(r.id, r.key, r.prefill) } }
         composable<AddToRoute> { Gate { AddToScreen() } }
         composable<ImportRoute> { val r = it.toRoute<ImportRoute>(); Gate { ImportScreen(r.uri) } }
+        composable<DuplicatesRoute> { Gate { com.vknxworks.contactctrl.ui.contacts.DuplicatesScreen() } }
     }
     LaunchedEffect(Unit) { c.contacts.start() }
 }

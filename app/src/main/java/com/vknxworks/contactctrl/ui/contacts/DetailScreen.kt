@@ -67,8 +67,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.material.icons.automirrored.outlined.CallSplit
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -107,6 +109,7 @@ fun DetailScreen(id: Long, key: String) {
     val scope = rememberCoroutineScope()
     val version by c.contacts.version.collectAsStateWithLifecycle()
     val settings by c.settings.settings.collectAsStateWithLifecycle()
+    val merges by c.merger.merges.collectAsStateWithLifecycle()
     var detail by remember { mutableStateOf<ContactDetail?>(null) }
     var gone by remember { mutableStateOf(false) }
     var menu by remember { mutableStateOf(false) }
@@ -210,6 +213,22 @@ fun DetailScreen(id: Long, key: String) {
                         },
                     )
                     if (!d.writable) GroupRow(stringResource(R.string.read_only), stringResource(R.string.read_only_body), icon = Icons.Outlined.Lock)
+                    // Merged here from several contacts: split it back (Android's "keep separate", nothing deleted).
+                    val record = remember(d.raws, merges) { merges.firstOrNull { it.covers(d.raws.map { r -> r.id }) } }
+                    if (record != null) {
+                        GroupRow(
+                            stringResource(R.string.separate),
+                            pluralStringResource(R.plurals.separate_sub, record.groups.size, record.groups.size),
+                            icon = Icons.AutoMirrored.Outlined.CallSplit,
+                            onClick = {
+                                scope.launch {
+                                    val ok = c.merger.undo(record)
+                                    Toast.makeText(context, context.getString(if (ok) R.string.separated else R.string.separate_failed), Toast.LENGTH_SHORT).show()
+                                    c.contacts.refreshNow()
+                                }
+                            },
+                        )
+                    }
                 }
             }
         }

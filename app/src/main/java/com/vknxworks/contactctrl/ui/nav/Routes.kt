@@ -17,5 +17,8 @@ import kotlinx.serialization.Serializable
 // "Add to a contact" from another app: pick a contact to add to, or make a new one.
 @Serializable data object AddToRoute
 
+// Likely duplicates, to merge or dismiss
+@Serializable data object DuplicatesRoute
+
 // Importing a .vcf file
 @Serializable data class ImportRoute(val uri: String)

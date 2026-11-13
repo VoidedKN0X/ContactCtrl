@@ -4,6 +4,17 @@ What changed in each ContactCtrl release. Every release on the [Releases page](h
 
 To publish a new version: bump `versionCode` and `versionName` in `app/build.gradle.kts`, add a section here, and push to `main`. Pushes without a version bump only build; they don't make a release.
 
+## v0.2.0 (2026-11-13)
+
+Find duplicate contacts and merge them, without deleting anything.
+
+### New
+
+- **Find duplicates.** The new button next to + on the Contacts tab lists contacts that are probably the same person, in groups, with the reason: the same phone number (also when it's written differently, such as "0470 12 34 56" and "+32 470 12 34 56", or with an extension), the same email address (upper or lower case doesn't matter), or the same name (case, accents, punctuation, extra spaces and the order of first and last name don't matter, so "Smith, John" matches "john smith"). A number or email shared by many contacts, like an office switchboard, doesn't count. Tap a contact in a group to check it first.
+- **Merge.** Merge joins a group into one contact the way Android itself links contacts: every account keeps its own copy of its details (this phone, DAVx⁵, Exchange, messengers like WhatsApp), nothing is deleted or rewritten, and the merged contact shows everything together. Contacts from accounts ContactCtrl can't change, such as messengers, can be merged too: they stay exactly as they are.
+- **Undo.** Right after a merge, Undo splits the contacts again. Later, a merged contact's page has "Separate merged contacts" under More, which splits it back into the contacts it was made from.
+- **Not duplicates.** Tell ContactCtrl a group isn't the same person and it won't suggest those contacts together again. The answer is kept on this phone, in ContactCtrl's own settings.
+
 ## v0.1.8 (2026-11-13)
 
 ### Security

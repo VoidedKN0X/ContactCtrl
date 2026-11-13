@@ -22,6 +22,7 @@ Part of the [Ctrl series](#the-ctrl-series) by VKNXWorks.
 - **Favourites** tab, a ringtone per contact, and sharing a contact as a .vcf file
 - **Select several contacts** (long-press) to share, favourite or delete them at once
 - **Import and export .vcf files** (vCard 2.1, 3.0 and 4.0, photos included), with duplicates skipped on import. Opening a .vcf file from your file manager imports it too
+- **Find and merge duplicates:** contacts that share a phone number (however it's written), an email address or a name (in any order, with or without accents) are grouped with the reason. Merge joins them the way Android links contacts, across accounts and without deleting anything, with Undo right away and "Separate merged contacts" on the contact's page later. "Not duplicates" is remembered
 - **Works with your other apps:** "add to contacts" and "edit contact" from other apps, and the contact, phone number, email and address pickers apps like messengers use. The app that asked gets only the one contact or number you tap
 - **App lock** with its own PIN and optional fingerprint unlock, and **Hide in screenshots** / **Hide in recent apps** (both off until you turn them on)
 - **Ctrl / Signal look**, shared by every Ctrl app: dark and light, following your phone's dark theme setting, high contrast, one violet accent, Space Grotesk and JetBrains Mono; landscape, tablet and foldable layouts
@@ -49,7 +50,7 @@ If the Obtainium button doesn't open the app, add `https://github.com/VoidedKN0X
 
 ## Getting started
 
-- **Contacts:** search at the top, tap a contact to open it, long-press to select several. The + button adds a contact.
+- **Contacts:** search at the top, tap a contact to open it, long-press to select several. The + button adds a contact; the button next to it finds duplicates.
 - **A contact:** call, message or email with the big buttons; tap a number to call it, the speech bubble to text it. The star makes it a favourite, the pencil edits it, the menu shares or deletes it.
 - **Favourites:** your starred contacts.
 - **Import and export:** in Settings, import a .vcf file from another phone or app, or export every contact to one file.
