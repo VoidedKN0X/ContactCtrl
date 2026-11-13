@@ -1,6 +1,9 @@
 package com.vknxworks.contactctrl.data.contacts
 
 import android.content.ContentResolver
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
 import android.net.Uri
 import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.ContactsContract.CommonDataKinds.Event
@@ -12,6 +15,7 @@ import android.util.Base64
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
+import java.nio.ByteBuffer
 import java.nio.charset.Charset
 
 /**
@@ -54,19 +58,55 @@ object VCard {
         return out
     }
 
-    /** Joins folded lines (a line starting with a space or tab continues the previous one; 2.1 also folds after "="). */
+    /**
+     * Joins folded lines (a line starting with a space or tab continues the previous one; 2.1 also folds after "=").
+     * Each line is built up in place, so a file with thousands of tiny continuation lines reads as fast as any other.
+     */
     private fun unfold(text: String): List<String> {
         val raw = text.replace("\r\n", "\n").replace('\r', '\n').split('\n')
         val out = ArrayList<String>()
+        var cur: StringBuilder? = null
+        // Whether the current line mentions QUOTED-PRINTABLE so far (it only grows, so once true it stays true).
+        var qp = false
+        fun flush() {
+            cur?.let { out += it.toString() }
+            cur = null
+        }
         for (l in raw) {
-            val prev = out.lastOrNull()
+            val c = cur
             when {
-                (l.startsWith(" ") || l.startsWith("\t")) && prev != null -> out[out.size - 1] = prev + l.substring(1)
-                prev != null && prev.endsWith("=") && prev.uppercase().contains("QUOTED-PRINTABLE") -> out[out.size - 1] = prev.dropLast(1) + l
-                l.isNotEmpty() -> out += l
+                (l.startsWith(" ") || l.startsWith("\t")) && c != null -> {
+                    val from = c.length
+                    c.append(l, 1, l.length)
+                    if (!qp) qp = mentionsQp(c, maxOf(0, from - QP.length))
+                }
+                c != null && c.endsWith("=") && qp -> {
+                    c.setLength(c.length - 1)
+                    c.append(l)
+                }
+                l.isNotEmpty() -> {
+                    flush()
+                    cur = StringBuilder(l)
+                    qp = mentionsQp(l, 0)
+                }
             }
         }
+        flush()
         return out
+    }
+
+    private const val QP = "QUOTED-PRINTABLE"
+
+    /** Whether [s] contains QUOTED-PRINTABLE (any case) starting at or after [from]. */
+    private fun mentionsQp(s: CharSequence, from: Int): Boolean {
+        var i = from
+        while (i + QP.length <= s.length) {
+            var k = 0
+            while (k < QP.length && s[i + k].equals(QP[k], ignoreCase = true)) k++
+            if (k == QP.length) return true
+            i++
+        }
+        return false
     }
 
     private class Builder {
@@ -138,7 +178,7 @@ object VCard {
                         b64 -> value
                         else -> ""
                     }
-                    if (data.isNotBlank()) photo = runCatching { Base64.decode(data.trim(), Base64.DEFAULT) }.getOrNull()?.takeIf { it.size < 4 * 1024 * 1024 }
+                    if (data.isNotBlank()) photo = runCatching { Base64.decode(data.trim(), Base64.DEFAULT) }.getOrNull()?.takeIf { it.size < 4 * 1024 * 1024 }?.let(::safePhoto)
                 }
             }
         }
@@ -152,6 +192,40 @@ object VCard {
             )
         }
     }
+
+    /** Largest side a photo from a file is kept at; bigger ones are scaled down (contacts show at most 720 px). */
+    private const val MAX_PHOTO_PX = 2048
+
+    /**
+     * A photo from a .vcf file, checked before it's used: something that isn't a picture is dropped, and a picture
+     * with huge dimensions (a small file can claim tens of thousands of pixels, enough to run the phone out of
+     * memory) is scaled down while it's read and saved again as a JPEG. Normal photos are kept exactly as they are.
+     */
+    fun safePhoto(bytes: ByteArray): ByteArray? = runCatching {
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeByteArray(bytes, 0, bytes.size, bounds)
+        val w = bounds.outWidth
+        val h = bounds.outHeight
+        if (w <= 0 || h <= 0) return@runCatching null
+        if (maxOf(w, h) <= MAX_PHOTO_PX) return@runCatching bytes
+        val bmp = decodeSampled(bytes, MAX_PHOTO_PX) ?: return@runCatching null
+        ByteArrayOutputStream().use { out ->
+            bmp.compress(Bitmap.CompressFormat.JPEG, 90, out)
+            out.toByteArray()
+        }
+    }.getOrNull()
+
+    /** [bytes] as a picture no bigger than [maxPx] on its longest side, read without ever holding it at full size. */
+    fun decodeSampled(bytes: ByteArray, maxPx: Int): Bitmap? = runCatching {
+        ImageDecoder.decodeBitmap(ImageDecoder.createSource(ByteBuffer.wrap(bytes))) { decoder, info, _ ->
+            decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+            val longest = maxOf(info.size.width, info.size.height)
+            if (longest > maxPx) {
+                val scale = maxPx.toFloat() / longest
+                decoder.setTargetSize((info.size.width * scale).toInt().coerceAtLeast(1), (info.size.height * scale).toInt().coerceAtLeast(1))
+            }
+        }
+    }.getOrNull()
 
     private fun indexOfUnquoted(s: String, ch: Char): Int {
         var quoted = false

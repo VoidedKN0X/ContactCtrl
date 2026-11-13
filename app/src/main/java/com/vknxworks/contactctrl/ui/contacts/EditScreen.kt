@@ -236,7 +236,8 @@ fun EditScreen(id: Long, key: String, prefill: Boolean) {
                 // Photo
                 Box(Modifier.fillMaxWidth().padding(top = 4.dp, bottom = 8.dp), contentAlignment = Alignment.Center) {
                     val newPhoto = draft.newPhoto
-                    val bmp = remember(newPhoto) { newPhoto?.let { android.graphics.BitmapFactory.decodeByteArray(it, 0, it.size) } }
+                    // Read at the size it's shown at, never at full size.
+                    val bmp = remember(newPhoto) { newPhoto?.let { com.vknxworks.contactctrl.data.contacts.VCard.decodeSampled(it, 512) } }
                     Box(Modifier.clip(RoundedCornerShape(36.dp)).clickable(onClickLabel = stringResource(R.string.photo_change)) { photoMenu = true }) {
                         when {
                             bmp != null -> Image(bmp.asImageBitmap(), null, Modifier.size(112.dp).clip(RoundedCornerShape(36.dp)), contentScale = ContentScale.Crop)

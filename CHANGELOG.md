@@ -4,6 +4,18 @@ What changed in each ContactCtrl release. Every release on the [Releases page](h
 
 To publish a new version: bump `versionCode` and `versionName` in `app/build.gradle.kts`, add a section here, and push to `main`. Pushes without a version bump only build; they don't make a release.
 
+## v0.1.8 (2026-11-13)
+
+### Security
+
+- **Contact photos from .vcf files are checked before they're used.** A photo in a file that isn't really a picture is now left out, and a picture with enormous dimensions (a small file can claim tens of thousands of pixels, enough to run the phone out of memory and crash ContactCtrl) is scaled down while it's read. Normal photos are imported exactly as before.
+- **The build tool download is checked.** The exact Gradle version used to build ContactCtrl is now verified against its published checksum before it's used.
+
+### Fixed
+
+- **Big or oddly made .vcf files import quickly.** A file with many folded lines (some apps split long values, such as photos, over thousands of short lines) took far longer to read than its size warranted. Files are now read in one quick pass, however they're laid out.
+- **The photo on the edit screen is read at the size it's shown at**, so a large photo no longer takes extra memory or time there.
+
 ## v0.1.7 (2026-11-12)
 
 ### Changed
