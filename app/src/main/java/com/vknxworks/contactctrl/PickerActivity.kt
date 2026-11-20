@@ -73,6 +73,7 @@ class PickerActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val mode = modeOf(intent)
+        secureBeforeFirstFrame()
         setContent {
             CtrlWindow(this) {
                 Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {

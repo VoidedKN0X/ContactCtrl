@@ -32,6 +32,11 @@ object DuplicateFinder {
     /** A phone number, email or name shared by more contacts than this links none of them. */
     const val MAX_SHARED = 12
 
+    // Compiled once: they are used for every contact in a duplicate scan.
+    private val MARKS = Regex("\\p{Mn}+")
+    private val NOT_LETTER_OR_DIGIT = Regex("[^\\p{L}\\p{N}]+")
+    private val WHITESPACE = Regex("\\s+")
+
     /** Canonical form of an unordered pair, for remembering "not duplicates". */
     fun pairKey(a: String, b: String): String = if (a <= b) "$a\u0000$b" else "$b\u0000$a"
 
@@ -45,8 +50,8 @@ object DuplicateFinder {
 
     /** Lower case, no accents, no punctuation, single spaces, parts in alphabetical order; null without letters. */
     fun nameKey(name: String): String? {
-        val folded = Normalizer.normalize(name, Normalizer.Form.NFKD).replace(Regex("\\p{Mn}+"), "").lowercase()
-        val parts = folded.split(Regex("[^\\p{L}\\p{N}]+")).filter { it.isNotEmpty() }
+        val folded = Normalizer.normalize(name, Normalizer.Form.NFKD).replace(MARKS, "").lowercase()
+        val parts = folded.split(NOT_LETTER_OR_DIGIT).filter { it.isNotEmpty() }
         if (parts.none { p -> p.any { it.isLetter() } }) return null
         return parts.sorted().joinToString(" ")
     }
@@ -79,7 +84,7 @@ object DuplicateFinder {
             }
             nameKey(c.name)?.let { k ->
                 val key = DupReason.Kind.NAME to k
-                if (keys.add(key)) shown.putIfAbsent(key, c.name.trim().replace(Regex("\\s+"), " "))
+                if (keys.add(key)) shown.putIfAbsent(key, c.name.trim().replace(WHITESPACE, " "))
             }
             for (k in keys) buckets.getOrPut(k) { ArrayList() } += i
         }

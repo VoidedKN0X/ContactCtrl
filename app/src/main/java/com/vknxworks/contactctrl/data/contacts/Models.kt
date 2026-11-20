@@ -35,8 +35,11 @@ data class ContactSummary(
     }
 
     companion object {
+        /** Accents and other combining marks. Compiled once: [fold] runs for every contact on every typed letter. */
+        private val MARKS = Regex("\\p{Mn}+")
+
         fun fold(s: String): String =
-            Normalizer.normalize(s, Normalizer.Form.NFD).replace(Regex("\\p{Mn}+"), "").lowercase()
+            Normalizer.normalize(s, Normalizer.Form.NFD).replace(MARKS, "").lowercase()
 
         fun digits(s: String): String = s.filter { it.isDigit() }
     }

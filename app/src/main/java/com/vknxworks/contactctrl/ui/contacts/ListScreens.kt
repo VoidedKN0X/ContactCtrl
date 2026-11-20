@@ -116,6 +116,10 @@ fun ContactsScreen() {
     var confirmDelete by remember { mutableStateOf(false) }
     val sorted = remember(all, settings.sortBy) { all.sortedFor(settings) }
     val shown = remember(sorted, query) { if (query.isBlank()) sorted else sorted.filter { it.matches(query) } }
+    // Favourites and the A-Z sections are worked out once per list, not again whenever the list is rebuilt
+    // (for example each time a contact is ticked while selecting).
+    val favourites = remember(shown, query) { if (query.isBlank()) shown.filter { it.starred } else emptyList() }
+    val groups = remember(shown, settings.sortBy) { shown.groupBy { it.section(settings) } }
     val selecting = selected.isNotEmpty()
     val listState = rememberLazyListState()
 
@@ -163,7 +167,6 @@ fun ContactsScreen() {
                 contentPadding = PaddingValues(bottom = 24.dp),
             ) {
                 // Favourites first when not searching, like a phone book's front page.
-                val favourites = if (query.isBlank()) shown.filter { it.starred } else emptyList()
                 if (favourites.isNotEmpty()) {
                     stickyHeader(key = "h-fav") { LetterHeader(stringResource(R.string.tab_favourites)) }
                     items(favourites, key = { "f${it.id}" }) { contact ->
@@ -172,7 +175,6 @@ fun ContactsScreen() {
                             onLongClick = { selected = selected.toggle(contact.id) })
                     }
                 }
-                val groups = shown.groupBy { it.section(settings) }
                 for ((letter, group) in groups) {
                     stickyHeader(key = "h-$letter") { LetterHeader(letter) }
                     items(group, key = { it.id }) { contact ->

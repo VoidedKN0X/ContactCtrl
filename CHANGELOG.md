@@ -4,6 +4,25 @@ What changed in each ContactCtrl release. Every release on the [Releases page](h
 
 To publish a new version: bump `versionCode` and `versionName` in `app/build.gradle.kts`, add a section here, and push to `main`. Pushes without a version bump only build; they don't make a release.
 
+## Unreleased
+
+Changes that are in the code but not in a release yet. They ship with the next version. None of this was run on a phone: the changes were checked by reading the code and by the CI build only.
+
+### Faster
+
+- **Searching no longer stutters with a big address book.** For every contact, on every letter you typed, the app rebuilt the small text pattern it uses to ignore accents ("zoe" finds "Zoë"). It is now built once and reused. Search results are exactly the same as before.
+- **Scrolling past contacts without a picture is lighter.** The pattern used to work out a contact's initials was rebuilt for every such row each time it was drawn; it is now built once. The initials are the same.
+- **Ticking contacts in a long list is smoother.** Favourites and the A-Z sections were worked out again every time the list was rebuilt, for example on each contact you ticked while selecting. They are now worked out only when the contacts, the search text or the sort order change.
+- **Looking for duplicates is a little quicker.** The three text patterns used to compare names (accents, punctuation, extra spaces) were rebuilt for every contact; they are now built once. The duplicate groups found are the same.
+
+### Privacy
+
+- **The app is hidden from screenshots from its very first frame when it opens locked.** The "not in screenshots or screen recordings" protection was switched on a moment after the first frame was drawn, so the very first frame of the lock screen was not covered. It is now set before anything is drawn when the app lock is on (and when "Hide in screenshots" is already known to be on), in the main window and in the windows other apps open to pick, add or edit a contact. Nothing changes while the app is open.
+
+### Not changed
+
+- ContactCtrl has no home-screen widgets and no Quick Settings tiles, so there was nothing to remove.
+
 ## Project updates (2026-11-19)
 
 ### Project

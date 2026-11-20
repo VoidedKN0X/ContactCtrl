@@ -49,6 +49,7 @@ class EditActivity : ComponentActivity() {
             finish()
             return
         }
+        secureBeforeFirstFrame()
         setContent {
             CtrlWindow(this) {
                 Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
