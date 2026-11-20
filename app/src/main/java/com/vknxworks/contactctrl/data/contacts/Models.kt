@@ -22,16 +22,32 @@ data class ContactSummary(
     val searchDigits: List<String> = phones.map(::digits)
     val searchEmails: List<String> = emails.map { it.lowercase() }
 
-    fun matches(query: String): Boolean {
-        val q = fold(query.trim())
+    /** The words of [searchName], split once per contact instead of once per contact per typed letter. */
+    private val searchWords: List<String> = searchName.split(' ', '-', ',', '.').filter { it.isNotEmpty() }
+
+    fun matches(query: String): Boolean = matches(Query.of(query))
+
+    /** Same answer as [matches] with the text; the query is prepared once for the whole list. */
+    fun matches(query: Query): Boolean {
+        val q = query.folded
         if (q.isEmpty()) return true
         // Every word of the query has to start a word of the name ("jo sm" finds "John Smith").
-        val words = searchName.split(' ', '-', ',', '.').filter { it.isNotEmpty() }
-        if (q.split(' ').filter { it.isNotEmpty() }.all { part -> words.any { it.startsWith(part) } }) return true
+        if (query.parts.all { part -> searchWords.any { it.startsWith(part) } }) return true
         if (searchName.contains(q)) return true
-        val qd = digits(query)
-        if (qd.length >= 3 && searchDigits.any { it.contains(qd) || it.contains(qd.trimStart('0')) }) return true
+        val qd = query.digits
+        if (qd.length >= 3 && searchDigits.any { it.contains(qd) || it.contains(query.digitsNoZero) }) return true
         return searchEmails.any { it.contains(q) }
+    }
+
+    /** A search text, folded and split once so a whole list can be matched against it. */
+    class Query private constructor(val folded: String, val parts: List<String>, val digits: String, val digitsNoZero: String) {
+        companion object {
+            fun of(query: String): Query {
+                val q = ContactSummary.fold(query.trim())
+                val qd = ContactSummary.digits(query)
+                return Query(q, q.split(' ').filter { it.isNotEmpty() }, qd, qd.trimStart('0'))
+            }
+        }
     }
 
     companion object {

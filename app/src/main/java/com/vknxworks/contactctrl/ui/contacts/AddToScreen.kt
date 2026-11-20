@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vknxworks.contactctrl.R
 import com.vknxworks.contactctrl.container
+import com.vknxworks.contactctrl.data.contacts.ContactSummary
 import com.vknxworks.contactctrl.ui.components.Group
 import com.vknxworks.contactctrl.ui.components.GroupRow
 import com.vknxworks.contactctrl.ui.components.ScreenTopBar
@@ -35,7 +36,9 @@ fun AddToScreen() {
     val settings by c.settings.settings.collectAsStateWithLifecycle()
     var query by rememberSaveable { mutableStateOf("") }
     val sorted = remember(all, settings.sortBy) { all.sortedFor(settings) }
-    val shown = remember(sorted, query) { if (query.isBlank()) sorted else sorted.filter { it.matches(query) } }
+    val shown = remember(sorted, query) {
+        if (query.isBlank()) sorted else ContactSummary.Query.of(query).let { q -> sorted.filter { it.matches(q) } }
+    }
     // Keep what the other app sent for whichever edit screen opens next.
     val sent = remember { c.prefill }
 

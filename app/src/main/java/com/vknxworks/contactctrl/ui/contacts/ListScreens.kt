@@ -115,7 +115,9 @@ fun ContactsScreen() {
     var selected by remember { mutableStateOf(setOf<Long>()) }
     var confirmDelete by remember { mutableStateOf(false) }
     val sorted = remember(all, settings.sortBy) { all.sortedFor(settings) }
-    val shown = remember(sorted, query) { if (query.isBlank()) sorted else sorted.filter { it.matches(query) } }
+    val shown = remember(sorted, query) {
+        if (query.isBlank()) sorted else ContactSummary.Query.of(query).let { q -> sorted.filter { it.matches(q) } }
+    }
     // Favourites and the A-Z sections are worked out once per list, not again whenever the list is rebuilt
     // (for example each time a contact is ticked while selecting).
     val favourites = remember(shown, query) { if (query.isBlank()) shown.filter { it.starred } else emptyList() }
@@ -168,16 +170,16 @@ fun ContactsScreen() {
             ) {
                 // Favourites first when not searching, like a phone book's front page.
                 if (favourites.isNotEmpty()) {
-                    stickyHeader(key = "h-fav") { LetterHeader(stringResource(R.string.tab_favourites)) }
-                    items(favourites, key = { "f${it.id}" }) { contact ->
+                    stickyHeader(key = "h-fav", contentType = "header") { LetterHeader(stringResource(R.string.tab_favourites)) }
+                    items(favourites, key = { "f${it.id}" }, contentType = { "contact" }) { contact ->
                         ContactRow(contact, settings, selected = contact.id in selected, selecting = selecting,
                             onClick = { if (selecting) selected = selected.toggle(contact.id) else nav.navigate(DetailRoute(contact.id, contact.lookupKey)) },
                             onLongClick = { selected = selected.toggle(contact.id) })
                     }
                 }
                 for ((letter, group) in groups) {
-                    stickyHeader(key = "h-$letter") { LetterHeader(letter) }
-                    items(group, key = { it.id }) { contact ->
+                    stickyHeader(key = "h-$letter", contentType = "header") { LetterHeader(letter) }
+                    items(group, key = { it.id }, contentType = { "contact" }) { contact ->
                         ContactRow(contact, settings, selected = contact.id in selected, selecting = selecting,
                             onClick = { if (selecting) selected = selected.toggle(contact.id) else nav.navigate(DetailRoute(contact.id, contact.lookupKey)) },
                             onLongClick = { selected = selected.toggle(contact.id) })
@@ -217,7 +219,7 @@ fun FavouritesScreen() {
             MessageView(Icons.Outlined.StarBorder, stringResource(R.string.fav_empty), stringResource(R.string.fav_empty_body), modifier = Modifier.bottomClearance())
         } else {
             LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 24.dp)) {
-                items(favourites, key = { it.id }) { contact ->
+                items(favourites, key = { it.id }, contentType = { "contact" }) { contact ->
                     ContactRow(contact, settings, selected = false, selecting = false,
                         onClick = { nav.navigate(DetailRoute(contact.id, contact.lookupKey)) }, onLongClick = null)
                 }

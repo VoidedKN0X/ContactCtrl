@@ -88,11 +88,15 @@ class ContactsRepository(private val context: Context, private val scope: Corout
 
     private fun loadAll(): List<ContactSummary> {
         val phones = HashMap<Long, MutableList<String>>()
+        // The digits of the numbers already kept per contact, so a repeated number is spotted without working
+        // out the digits of every earlier number again for each row.
+        val seenDigits = HashMap<Long, HashSet<String>>()
         resolver.query(Phone.CONTENT_URI, arrayOf(Phone.CONTACT_ID, Phone.NUMBER), null, null, null)?.use { c ->
             while (c.moveToNext()) {
                 val num = c.getString(1) ?: continue
-                val list = phones.getOrPut(c.getLong(0)) { mutableListOf() }
-                if (list.none { ContactSummary.digits(it) == ContactSummary.digits(num) }) list += num
+                val id = c.getLong(0)
+                val list = phones.getOrPut(id) { mutableListOf() }
+                if (seenDigits.getOrPut(id) { HashSet() }.add(ContactSummary.digits(num))) list += num
             }
         }
         val emails = HashMap<Long, MutableList<String>>()

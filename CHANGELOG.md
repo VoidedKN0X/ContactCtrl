@@ -12,6 +12,12 @@ Built and checked by CI only: nothing here had been run on a phone when it was p
 
 - **A shared contact no longer stays in the app's cache until the next share.** Sharing a contact writes a plain `.vcf` file to ContactCtrl's private cache so the app you picked can read it. That file used to stay there until you shared something else, which could be months. Files left from an earlier run are now deleted in the background every time ContactCtrl starts, and again whenever the app lock locks. Only files written before the app last started are removed, so a share that is in progress, or one the other app is still reading, is never touched: a file shared since the app started stays exactly as long as before (until the next share or the next start). Sharing itself works the same.
 
+### Faster
+
+- **Searching a big address book does less work per letter.** For every contact, on every letter typed, the app prepared the search text again (accents removed, split into words, digits picked out) and split the contact's name into words again. The search text is now prepared once per letter for the whole list, and each contact's name is split once when the contacts load. This applies to the Contacts tab and to "Add to a contact". The results are exactly the same (checked on a computer by comparing the old and new matching over 46,800 name, number, email and search-text combinations).
+- **Reloading contacts is a little lighter.** While reading phone numbers, the digits of every number already kept for a contact were worked out again for each further number of that contact, to skip repeats. They are now remembered. The same numbers are kept, in the same order.
+- **Scrolling the contact list reuses rows better.** Rows and letter headings are now marked as two different kinds of list item, so a row scrolled off the screen is reused for another row instead of being rebuilt as a heading (and the other way round). Nothing looks different.
+
 ## v0.2.1 (2026-11-20)
 
 Built and checked by CI only: nothing in this release had been run on a phone when it was published.
