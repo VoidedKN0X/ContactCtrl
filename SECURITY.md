@@ -34,4 +34,6 @@ Every release is built from this repo by GitHub Actions and signed with the same
 B5:30:D1:03:42:50:CC:75:E1:1D:13:9C:26:3B:95:C8:13:13:1F:4A:8E:6D:56:F0:4D:5C:FE:80:8B:29:B9:55
 ```
 
+The key never meets the build: the job that runs Gradle (and with it every plugin and library) has no secrets and produces an unsigned APK. A separate job that checks out nothing and runs no build code signs that APK, then refuses to pass it on unless it is signed by exactly this certificate and its contents are unchanged.
+
 The [CtrlF-Droid repo](https://voidedkn0x.github.io/CtrlF-Droid/) only accepts APKs signed with this key.
