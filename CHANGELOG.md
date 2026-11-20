@@ -4,6 +4,14 @@ What changed in each ContactCtrl release. Every release on the [Releases page](h
 
 To publish a new version: bump `versionCode` and `versionName` in `app/build.gradle.kts`, add a section here, and push to `main`. Pushes without a version bump only build; they don't make a release.
 
+## Unreleased
+
+Built and checked by CI only: nothing here had been run on a phone when it was pushed.
+
+### Privacy
+
+- **A shared contact no longer stays in the app's cache until the next share.** Sharing a contact writes a plain `.vcf` file to ContactCtrl's private cache so the app you picked can read it. That file used to stay there until you shared something else, which could be months. Files left from an earlier run are now deleted in the background every time ContactCtrl starts, and again whenever the app lock locks. Only files written before the app last started are removed, so a share that is in progress, or one the other app is still reading, is never touched: a file shared since the app started stays exactly as long as before (until the next share or the next start). Sharing itself works the same.
+
 ## v0.2.1 (2026-11-20)
 
 Built and checked by CI only: nothing in this release had been run on a phone when it was published.

@@ -104,7 +104,7 @@ Turn it on under **Settings > Privacy and security > App lock** (tap your profil
 **Telemetry-free.** ContactCtrl has no analytics, crash reporting, usage stats or tracking of any kind. It has **no internet permission**, works fully offline and never connects to the internet. Every build checks that the app has no network permission and no Google libraries.
 
 - Your contacts stay in Android's contacts storage and in the accounts you chose. ContactCtrl keeps no copy of them; its own files hold only its settings.
-- A contact you share becomes a .vcf file in ContactCtrl's private cache, readable only by the app you share it with, and only for that share.
+- A contact you share becomes a .vcf file in ContactCtrl's private cache, readable only by the app you share it with, and only for that share. The file is replaced on the next share, and any file left from an earlier run is deleted when ContactCtrl starts and when it locks.
 - Exporting writes a file only to the place you choose. Nothing is uploaded.
 - Other apps can hand ContactCtrl a .vcf file to import only as a `content://` link they share with it; ContactCtrl always shows what's in the file and imports nothing until you tap the Import button.
 - Copied numbers and addresses are marked as sensitive, so Android doesn't show them in the clipboard preview.

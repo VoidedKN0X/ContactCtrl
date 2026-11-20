@@ -13,7 +13,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 
 /** Manual dependency container; one per process. */
 class AppContainer(val context: Context) {
@@ -57,14 +59,33 @@ class AppContainer(val context: Context) {
 
     fun onLocked() {
         vault.close()
+        appScope.launch(Dispatchers.IO) { clearLeftoverSharedFiles() }
     }
 
     fun onUnlocked() {
         AppLock.markUnlocked()
     }
 
+    /** When this process started; shared files written before it are leftovers of an earlier run. */
+    private val startedAt = System.currentTimeMillis()
+
+    /**
+     * Sharing a contact writes a plain .vcf to the private cache (`cacheDir/shared`), and it stayed there until
+     * the next share. Leftovers are deleted at each start and when the app locks. Only files last written before
+     * this start are touched, so a share that is in progress, or one the receiving app is still reading, is
+     * never hit: a file shared in this run stays until the next share or the next start, as before.
+     */
+    private fun clearLeftoverSharedFiles() {
+        runCatching {
+            File(context.cacheDir, "shared").listFiles()?.forEach { file ->
+                if (file.isFile && file.lastModified() < startedAt) file.delete()
+            }
+        }
+    }
+
     init {
         AppLock.onLocked = { onLocked() }
+        appScope.launch(Dispatchers.IO) { clearLeftoverSharedFiles() }
     }
 }
 
