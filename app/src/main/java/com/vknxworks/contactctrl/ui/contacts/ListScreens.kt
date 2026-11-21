@@ -125,7 +125,7 @@ fun ContactsScreen() {
     // "" all contacts, "a:<account key>" one account, "g:<label id>" one label. Kept while the app runs.
     var filter by rememberSaveable { mutableStateOf("") }
     var filterSheet by remember { mutableStateOf(false) }
-    val groups by c.contacts.groups.collectAsStateWithLifecycle()
+    val labels by c.contacts.groups.collectAsStateWithLifecycle()
     var selected by remember { mutableStateOf(setOf<Long>()) }
     var confirmDelete by remember { mutableStateOf(false) }
     val sorted = remember(all, settings.sortBy) { all.sortedFor(settings) }
@@ -179,7 +179,7 @@ fun ContactsScreen() {
         }
         SearchField(query, onChange = { query = it })
         if (filter.isNotEmpty()) {
-            FilterBar(filterLabel(context, filter, groups), count = filtered.size, onClear = { filter = "" })
+            FilterBar(filterLabel(context, filter, labels), count = filtered.size, onClear = { filter = "" })
         }
         when {
             !loaded -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = CtrlColors.AccentText) }
@@ -215,7 +215,7 @@ fun ContactsScreen() {
     if (filterSheet) {
         FilterSheet(
             all = all,
-            groups = groups,
+            groups = labels,
             current = filter,
             onDismiss = { filterSheet = false },
             onPick = { filter = it; filterSheet = false },
