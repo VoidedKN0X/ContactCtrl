@@ -20,6 +20,8 @@ Part of the [Ctrl series](#the-ctrl-series) by VKNXWorks.
 - **Safe with every account:** only what changed is written, and only to accounts that sync changes back. Contacts from messengers like WhatsApp or Signal are shown but never changed, so a sync can't undo or duplicate your edits
 - **Choose where new contacts go:** this phone only, or a sync account like DAVx⁵
 - **Labels and account filter:** show all contacts, only those of one account (this phone, DAVx⁵, a messenger, ...) or only one label. Put a contact in labels from its page, and add, rename or delete labels (deleting a label never deletes its contacts). Labels are Android's own contact groups, so they sync with accounts that support them
+- **Birthday reminders:** a notification on the day of a contact's birthday, at the hour you choose (with the age when the year is known). On the lock screen it only says that someone has a birthday
+- **Scheduled backup:** every contact in a .vcf file in a folder you pick, daily or weekly, keeping the newest 1 to 20 backups
 - **Favourites** tab, a ringtone per contact, sharing a contact as a .vcf file, and **showing a contact as a QR code** another phone's camera can scan to add it (made on the phone, nothing is sent)
 - **Select several contacts** (long-press) to share, favourite or delete them at once
 - **Import and export .vcf files** (vCard 2.1, 3.0 and 4.0, photos included), with duplicates skipped on import. Opening a .vcf file from your file manager imports it too. **Import from the SIM card** copies the contacts saved on your SIM (the default SIM on a dual-SIM phone) the same way
@@ -80,6 +82,8 @@ Settings and About are behind your profile picture at the top right of every tab
 | Modify your contacts (`WRITE_CONTACTS`) | Adding, editing, favouriting, importing and deleting contacts when you ask. |
 | Directly call phone numbers (`CALL_PHONE`) | Optional: tapping a number calls it straight away. Without it, numbers open in your phone app first. Turn this off in Settings with *Tap a number to call*. |
 | Use biometric hardware (`USE_BIOMETRIC`) | Optional fingerprint unlock for the app lock. |
+| Show notifications (`POST_NOTIFICATIONS`) | Optional: birthday reminders. Asked for only when you turn them on. |
+| Run at startup (`RECEIVE_BOOT_COMPLETED`) | Setting the daily birthday check and the scheduled backup again after the phone restarts. Granted at install, no prompt. |
 | Hide other apps' floating windows (`HIDE_OVERLAY_WINDOWS`) | Hide other apps' floating windows over the PIN screen (and the app lock's other screens and delete confirmations), so nothing can be drawn over them. Granted at install, no prompt. |
 
 Android also lists a "dynamic receiver" permission (`DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`) that AndroidX adds to every app so only ContactCtrl itself can send it internal broadcasts; it gives the app no access to anything. ContactCtrl has no internet, location, storage, microphone or camera permissions.
@@ -106,7 +110,8 @@ Turn it on under **Settings > Privacy and security > App lock** (tap your profil
 
 - Your contacts stay in Android's contacts storage and in the accounts you chose. ContactCtrl keeps no copy of them; its own files hold only its settings.
 - A contact you share becomes a .vcf file in ContactCtrl's private cache, readable only by the app you share it with, and only for that share. The file is replaced on the next share, and any file left from an earlier run is deleted when ContactCtrl starts and when it locks.
-- Exporting writes a file only to the place you choose. Nothing is uploaded.
+- Exporting and the scheduled backup write a file only to the place you choose. Nothing is uploaded. The backup deletes only its own older backup files (named `contactctrl-backup-…`), never anything else in that folder.
+- Birthday reminders are worked out on the phone; on the lock screen they don't show the name.
 - Other apps can hand ContactCtrl a .vcf file to import only as a `content://` link they share with it; ContactCtrl always shows what's in the file and imports nothing until you tap the Import button.
 - Copied numbers and addresses are marked as sensitive, so Android doesn't show them in the clipboard preview.
 - ContactCtrl is left out of Android's cloud backup and its phone-to-phone transfer.

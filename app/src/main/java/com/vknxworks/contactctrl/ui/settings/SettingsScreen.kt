@@ -79,6 +79,8 @@ fun SettingsScreen() {
             ListGroup(settings) { set(it) }
             NewContactsGroup(settings) { set(it) }
             ImportExportGroup()
+            BackupGroup(settings)
+            BirthdayGroup(settings)
             PrivacyAndSecurityGroup(settings)
         }
     }

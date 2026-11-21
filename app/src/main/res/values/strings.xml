@@ -265,4 +265,42 @@
         <item quantity="one">%d contact on the SIM card</item>
         <item quantity="other">%d contacts on the SIM card</item>
     </plurals>
+
+    <!-- Birthday reminders -->
+    <string name="group_birthdays">Birthdays</string>
+    <string name="birthday_reminders">Birthday reminders</string>
+    <string name="birthday_reminders_sub">A notification on the day of a contact\'s birthday</string>
+    <string name="birthday_time">Remind me at</string>
+    <string name="birthday_footer">Checked on the phone once a day. Android may send it up to an hour later to save battery. On the lock screen the notification only says that someone has a birthday.</string>
+    <string name="birthday_no_permission">Without permission to show notifications, ContactCtrl can\'t remind you. You can allow it in the app\'s Android settings.</string>
+    <string name="birthday_channel">Birthdays</string>
+    <string name="birthday_today">Birthday today</string>
+    <string name="birthday_public">A birthday today</string>
+    <plurals name="birthday_turns">
+        <item quantity="one">Turns %d today</item>
+        <item quantity="other">Turns %d today</item>
+    </plurals>
+
+    <!-- Scheduled backup -->
+    <string name="group_backup">Scheduled backup</string>
+    <string name="backup_scheduled">Back up automatically</string>
+    <string name="backup_scheduled_sub">Every contact in a .vcf file in a folder on this phone</string>
+    <string name="backup_folder">Folder</string>
+    <string name="backup_folder_none">Not chosen</string>
+    <string name="backup_folder_failed">ContactCtrl can\'t keep access to that folder. Pick another one.</string>
+    <string name="backup_every">How often</string>
+    <string name="backup_daily">Every day</string>
+    <string name="backup_weekly">Every week</string>
+    <string name="backup_keep">Keep</string>
+    <plurals name="backup_keep_n">
+        <item quantity="one">The newest backup</item>
+        <item quantity="other">The newest %d backups</item>
+    </plurals>
+    <string name="backup_now">Back up now</string>
+    <string name="backup_running">Backing up…</string>
+    <string name="backup_done">Backup saved</string>
+    <string name="backup_never">No backup yet</string>
+    <string name="backup_last">Last backup: %1$s</string>
+    <string name="backup_last_failed">The last backup failed. Check that the folder still exists, or pick it again.</string>
+    <string name="backup_footer">Runs when the battery isn\'t low, so it may wait a bit. The file isn\'t encrypted, like an export: pick a folder only you can reach. Only backup files ContactCtrl made itself (contactctrl-backup-…) are deleted to keep the number you chose. Private contacts aren\'t in it.</string>
 </resources>

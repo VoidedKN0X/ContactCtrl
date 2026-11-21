@@ -18,6 +18,11 @@
          (Android 12+, granted at install, no prompt) -->
     <uses-permission android:name="android.permission.HIDE_OVERLAY_WINDOWS" />
 
+    <!-- Birthday reminders (asked for only when you turn them on). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Sets the daily birthday check and the scheduled backup again after the phone restarts. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
 
     <application
@@ -149,6 +154,25 @@
                 <data android:mimeType="vnd.android.cursor.item/postal-address_v2" />
             </intent-filter>
         </activity>
+
+        <!-- The daily birthday check, and setting it and the backup again after a restart, an app update or a
+             clock change. Not exported: only the system and ContactCtrl itself can send to it. -->
+        <receiver
+            android:name=".background.ReminderReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- The scheduled .vcf backup, run by Android's job scheduler. -->
+        <service
+            android:name=".background.BackupJob"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <!-- Shares a contact as a .vcf file, only with the app you pick and only for that share. -->
         <provider

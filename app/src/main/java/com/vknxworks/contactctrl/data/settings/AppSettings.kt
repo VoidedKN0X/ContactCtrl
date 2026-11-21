@@ -7,6 +7,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.vknxworks.contactctrl.R
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.io.IOException
@@ -43,6 +46,12 @@ enum class SortBy(@StringRes val label: Int) {
     LAST_NAME(R.string.sort_last),
 }
 
+/** How often the scheduled .vcf backup runs. */
+enum class BackupEvery(@StringRes val label: Int, val days: Int) {
+    DAY(R.string.backup_daily, 1),
+    WEEK(R.string.backup_weekly, 7),
+}
+
 data class AppSettings(
     val nameOrder: NameOrder = NameOrder.FIRST_LAST,
     val sortBy: SortBy = SortBy.FIRST_NAME,
@@ -58,6 +67,21 @@ data class AppSettings(
     val hideScreenshots: Boolean = false,
     /** "Hide in recent apps": the Recents view shows a blank card. Screenshots still work. */
     val hideRecents: Boolean = false,
+    /** A notification on the morning of a contact's birthday. */
+    val birthdayReminders: Boolean = false,
+    /** The hour (0-23) the birthday notification comes, give or take the phone's battery saving. */
+    val birthdayHour: Int = 9,
+    /** The scheduled .vcf backup to [backupFolder]. */
+    val backupOn: Boolean = false,
+    /** The folder the backup goes to: a document-tree URI you picked, "" for none yet. */
+    val backupFolder: String = "",
+    val backupEvery: BackupEvery = BackupEvery.WEEK,
+    /** How many backup files ContactCtrl keeps in the folder; older ones it made itself are deleted. */
+    val backupKeep: Int = 5,
+    /** When the last backup finished (ms), 0 for never. Status, not a setting: never exported. */
+    val lastBackupAt: Long = 0L,
+    /** The last backup run failed (the folder is gone or not writable). Status, not a setting. */
+    val lastBackupFailed: Boolean = false,
 )
 
 class SettingsRepository(private val context: Context, scope: CoroutineScope) {
@@ -70,6 +94,14 @@ class SettingsRepository(private val context: Context, scope: CoroutineScope) {
         val lockTimeout = stringPreferencesKey("lock_timeout")
         val hideScreenshots = booleanPreferencesKey("hide_screenshots")
         val hideRecents = booleanPreferencesKey("hide_recents")
+        val birthdayReminders = booleanPreferencesKey("birthday_reminders")
+        val birthdayHour = intPreferencesKey("birthday_hour")
+        val backupOn = booleanPreferencesKey("backup_on")
+        val backupFolder = stringPreferencesKey("backup_folder")
+        val backupEvery = stringPreferencesKey("backup_every")
+        val backupKeep = intPreferencesKey("backup_keep")
+        val lastBackupAt = longPreferencesKey("last_backup_at")
+        val lastBackupFailed = booleanPreferencesKey("last_backup_failed")
     }
 
     private val prefs: Flow<Preferences> = context.appDataStore.data.catch { e ->
@@ -89,7 +121,18 @@ class SettingsRepository(private val context: Context, scope: CoroutineScope) {
         lockTimeout = enumOr(this[K.lockTimeout], LockTimeout.IMMEDIATELY),
         hideScreenshots = this[K.hideScreenshots] ?: false,
         hideRecents = this[K.hideRecents] ?: false,
+        birthdayReminders = this[K.birthdayReminders] ?: false,
+        birthdayHour = (this[K.birthdayHour] ?: 9).coerceIn(0, 23),
+        backupOn = this[K.backupOn] ?: false,
+        backupFolder = this[K.backupFolder] ?: "",
+        backupEvery = enumOr(this[K.backupEvery], BackupEvery.WEEK),
+        backupKeep = (this[K.backupKeep] ?: 5).coerceIn(1, 50),
+        lastBackupAt = this[K.lastBackupAt] ?: 0L,
+        lastBackupFailed = this[K.lastBackupFailed] ?: false,
     )
+
+    /** The saved settings, read from disk (for background work, where [settings] may not have loaded yet). */
+    suspend fun current(): AppSettings = prefs.first().toSettings()
 
     /** Saves a change. If the phone's storage fails, the change is dropped instead of closing the app. */
     suspend fun update(transform: (AppSettings) -> AppSettings) {
@@ -104,6 +147,14 @@ class SettingsRepository(private val context: Context, scope: CoroutineScope) {
                 p[K.lockTimeout] = s.lockTimeout.name
                 p[K.hideScreenshots] = s.hideScreenshots
                 p[K.hideRecents] = s.hideRecents
+                p[K.birthdayReminders] = s.birthdayReminders
+                p[K.birthdayHour] = s.birthdayHour
+                p[K.backupOn] = s.backupOn
+                p[K.backupFolder] = s.backupFolder
+                p[K.backupEvery] = s.backupEvery.name
+                p[K.backupKeep] = s.backupKeep
+                p[K.lastBackupAt] = s.lastBackupAt
+                p[K.lastBackupFailed] = s.lastBackupFailed
             }
         } catch (e: IOException) {
             // Nothing to do: the settings stay as they were.
