@@ -164,7 +164,8 @@ fun DuplicatesScreen() {
 
 @Composable
 private fun GroupCard(g: DupGroup, raws: Map<Long, List<RawRef>>, busy: Boolean, onOpen: (DupContact) -> Unit, onMerge: () -> Unit, onDismiss: () -> Unit) {
-    val readOnly = g.members.flatMap { raws[it.id].orEmpty() }.filter { !it.writable }.map { Accounts.label(it.accountType) }.distinct()
+    val ctx = androidx.compose.ui.platform.LocalContext.current
+    val readOnly = g.members.flatMap { raws[it.id].orEmpty() }.filter { !it.writable }.map { Accounts.label(ctx, it.accountType) }.distinct()
     CtrlCard(Modifier.fillMaxWidth().padding(horizontal = Gutter, vertical = 6.dp), padding = PaddingValues(0.dp)) {
         Column(Modifier.padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 6.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             g.reasons.take(4).forEach { r -> SectionLabel(reasonText(r), color = CtrlColors.AccentText) }

@@ -26,7 +26,11 @@ object Accounts {
 
     private val readOnlyTypesCached: Set<String> by lazy { readOnlyTypes() }
 
-    /** A short, human name for an account type. */
+    /** Like [label], with the phone's own contacts named in the phone's language ("This phone"). */
+    fun label(context: android.content.Context, type: String?): String =
+        if (type == null) context.getString(com.vknxworks.contactctrl.R.string.account_device) else label(type)
+
+    /** A short, human name for an account type (product names; [label] with a context names the phone itself). */
     fun label(type: String?): String = when {
         type == null -> "Phone"
         type.contains("whatsapp") -> "WhatsApp"

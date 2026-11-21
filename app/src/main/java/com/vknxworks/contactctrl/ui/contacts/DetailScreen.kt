@@ -473,7 +473,7 @@ fun SheetAction(icon: ImageVector, label: String, danger: Boolean = false, onCli
 }
 
 private fun accountsFooter(context: Context, d: ContactDetail): String {
-    val names = d.raws.map { Accounts.label(it.accountType) + if (!it.writable) " (" + context.getString(R.string.read_only_short) + ")" else "" }.distinct()
+    val names = d.raws.map { Accounts.label(context, it.accountType) + if (!it.writable) " (" + context.getString(R.string.read_only_short) + ")" else "" }.distinct()
     return context.getString(R.string.stored_in, names.joinToString(", "))
 }
 
