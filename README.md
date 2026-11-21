@@ -30,7 +30,7 @@ Part of the [Ctrl series](#the-ctrl-series) by VKNXWorks.
 - **Works with your other apps:** "add to contacts" and "edit contact" from other apps, and the contact, phone number, email and address pickers apps like messengers use. The app that asked gets only the one contact or number you tap
 - **Settings file:** export ContactCtrl's settings to a file and import them on another phone, after seeing which settings will be replaced. Never includes contacts, private contacts, the PIN or the backup folder
 - **App lock** with its own PIN and optional fingerprint unlock, and **Hide in screenshots** / **Hide in recent apps** (both off until you turn them on)
-- **English and Dutch:** ContactCtrl follows your phone's language (Dutch when the phone is set to Dutch, English otherwise)
+- **English, Dutch, French and German:** ContactCtrl follows your phone's language (Dutch, French or German when the phone is set to one of them, English otherwise). Android's per-app language setting lists them too
 - **Ctrl / Signal look**, shared by every Ctrl app: dark and light, following your phone's dark theme setting, high contrast, one violet accent, Space Grotesk and JetBrains Mono; landscape, tablet and foldable layouts
 
 ## Requirements

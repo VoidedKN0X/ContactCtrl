@@ -8,6 +8,10 @@ To publish a new version: bump `versionCode` and `versionName` in `app/build.gra
 
 Changes on `main` that aren't in a release yet. They ship with the next version.
 
+### New
+
+- **ContactCtrl in French and German, following the phone's language.** When your phone is set to French, ContactCtrl now shows in French (polite "vous"); set to German, it shows in German (informal "du"). Every screen, notification and message is translated, including the app lock and the You page. Product, account and file names (DAVx⁵, .vcf, SIM, ...) stay as they are. Android's per-app language setting (Settings > Apps > ContactCtrl > Language) now lists English, Dutch, French and German, so you can also pick a language for ContactCtrl alone. Not yet tried on a phone.
+
 ### Fixed
 
 - **Dutch: one name for "Hide in screenshots".** Two Dutch texts on the Settings page (the settings-file and backup notes) called the switch "Verbergen in screenshots" while the switch itself is called "Verbergen in schermafbeeldingen". They now use the same name.

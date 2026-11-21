@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French ("vous"). Android picks it when the phone is set to French. -->
+<resources>
+    <!-- Shell texts for this app -->
+    <string name="settings_subtitle">Liste, nouveaux contacts, import, export et confidentialité</string>
+    <string name="app_lock_subtitle">Demander un code (et éventuellement votre empreinte) à l\'ouverture de ContactCtrl</string>
+    <string name="app_lock_footer">ContactCtrl fonctionne entièrement hors ligne : pas d\'autorisation Internet, pas d\'analyse, pas de pistage. Vos contacts restent dans le stockage de contacts de votre téléphone et dans les comptes que vous avez choisis.</string>
+    <string name="lock_prompt_subtitle">Vos contacts</string>
+    <string name="lock_forgot_body">Le code ne peut pas être récupéré. ContactCtrl réinitialise ses propres paramètres et désactive le verrouillage. Vos contacts ne sont pas supprimés. Si votre téléphone a un verrouillage d\'écran, vous confirmerez d\'abord avec celui-ci.</string>
+    <string name="lock_reset_prompt_title">Réinitialiser le verrouillage de ContactCtrl</string>
+    <string name="lock_reset_prompt_subtitle">Utilisez le verrouillage d\'écran de votre téléphone pour confirmer votre identité</string>
+    <string name="lock_reset_prompt_failed">Impossible d\'afficher le verrouillage d\'écran</string>
+
+    <!-- Tabs -->
+    <string name="tab_contacts">Contacts</string>
+    <string name="tab_favourites">Favoris</string>
+    <plurals name="contact_count">
+        <item quantity="one">%d contact</item>
+        <item quantity="other">%d contacts</item>
+    </plurals>
+
+    <!-- Permission -->
+    <string name="perm_title">Autoriser l\'accès à vos contacts</string>
+    <string name="perm_body">ContactCtrl affiche, ajoute et modifie les contacts enregistrés sur ce téléphone et dans vos comptes. Rien ne quitte le téléphone.</string>
+    <string name="perm_body_settings">L\'accès aux contacts est désactivé pour ContactCtrl. Activez Contacts dans les autorisations de l\'appli pour l\'utiliser.</string>
+    <string name="perm_allow">Autoriser l\'accès</string>
+    <string name="perm_open_settings">Ouvrir les paramètres de l\'appli</string>
+
+    <!-- List -->
+    <string name="search_hint">Rechercher noms, numéros et e-mails</string>
+    <string name="search_none">Aucun résultat pour « %1$s »</string>
+    <string name="empty_title">Aucun contact pour l\'instant</string>
+    <string name="empty_body">Ajoutez-en un avec le bouton +, ou importez un fichier .vcf depuis les Paramètres.</string>
+    <string name="add_contact">Ajouter un contact</string>
+    <string name="fav_empty">Aucun favori pour l\'instant</string>
+    <string name="fav_empty_body">Ouvrez un contact et appuyez sur l\'étoile pour le garder ici.</string>
+    <plurals name="selected_count">
+        <item quantity="one">%d sélectionné</item>
+        <item quantity="other">%d sélectionnés</item>
+    </plurals>
+    <string name="favourite_toggle">Ajouter ou retirer des favoris</string>
+    <string name="share">Partager</string>
+    <string name="share_failed">Impossible de partager le contact</string>
+    <string name="delete">Supprimer</string>
+    <string name="delete_title">Supprimer %1$s ?</string>
+    <plurals name="delete_many_title">
+        <item quantity="one">Supprimer %d contact ?</item>
+        <item quantity="other">Supprimer %d contacts ?</item>
+    </plurals>
+    <string name="delete_body">Ils sont supprimés de ce téléphone et de tous les comptes où ils sont enregistrés. Cette action est irréversible.</string>
+    <string name="delete_failed">Impossible de supprimer le contact</string>
+
+    <!-- Contact -->
+    <string name="contact_not_found">Ce contact n\'existe plus</string>
+    <string name="favourite">Ajouter aux favoris</string>
+    <string name="unfavourite">Retirer des favoris</string>
+    <string name="edit">Modifier</string>
+    <string name="more">Plus</string>
+    <string name="action_call">Appeler</string>
+    <string name="action_text">Message</string>
+    <string name="action_email">E-mail</string>
+    <string name="group_phones">Numéros de téléphone</string>
+    <string name="group_emails">Adresses e-mail</string>
+    <string name="group_addresses">Adresses</string>
+    <string name="group_about_contact">À propos</string>
+    <string name="group_dates">Dates</string>
+    <string name="group_websites">Sites web</string>
+    <string name="group_more">Plus</string>
+    <string name="group_name">Nom</string>
+    <string name="default_marker">Par défaut</string>
+    <string name="field_work">Travail</string>
+    <string name="field_nickname">Surnom</string>
+    <string name="field_note">Notes</string>
+    <string name="field_prefix">Préfixe</string>
+    <string name="field_given">Prénom</string>
+    <string name="field_middle">Deuxième prénom</string>
+    <string name="field_family">Nom</string>
+    <string name="field_suffix">Suffixe</string>
+    <string name="field_company">Entreprise</string>
+    <string name="field_title">Fonction</string>
+    <string name="ringtone">Sonnerie</string>
+    <string name="ringtone_default">Sonnerie par défaut du téléphone</string>
+    <string name="ringtone_silent">Silencieux</string>
+    <string name="ringtone_custom">Sonnerie personnalisée</string>
+    <string name="read_only">Contact en lecture seule</string>
+    <string name="read_only_body">Ce contact vient d\'une appli ou d\'un compte qui ne synchronise pas les modifications en retour (comme une messagerie), il ne peut donc pas être modifié ici.</string>
+    <string name="read_only_short">lecture seule</string>
+    <string name="stored_in">Enregistré dans : %1$s</string>
+    <string name="no_app">Aucune appli de ce téléphone ne peut ouvrir cela</string>
+    <string name="web_homepage">Page d\'accueil</string>
+    <string name="web_blog">Blog</string>
+    <string name="web_work">Travail</string>
+    <string name="web_home">Personnel</string>
+    <string name="web_other">Site web</string>
+
+    <!-- Edit -->
+    <string name="new_contact">Nouveau contact</string>
+    <string name="edit_contact">Modifier le contact</string>
+    <string name="edit_empty">Ajoutez d\'abord un nom, un numéro ou un e-mail</string>
+    <string name="save_failed">Impossible d\'enregistrer : %1$s</string>
+    <string name="more_name_fields">Plus de champs de nom</string>
+    <string name="fewer_name_fields">Moins de champs de nom</string>
+    <string name="add_phone">Ajouter un numéro</string>
+    <string name="add_email">Ajouter un e-mail</string>
+    <string name="add_address">Ajouter une adresse</string>
+    <string name="add_date">Ajouter une date</string>
+    <string name="add_website">Ajouter un site web</string>
+    <string name="remove">Retirer</string>
+    <string name="label_type">Libellé</string>
+    <string name="type_custom">Libellé personnalisé</string>
+    <string name="pick_date">Choisir une date</string>
+    <string name="year_unknown">Année inconnue</string>
+    <string name="photo_change">Changer la photo</string>
+    <string name="photo_choose">Choisir une photo</string>
+    <string name="photo_remove">Retirer la photo</string>
+    <string name="photo_failed">Impossible de lire cette image</string>
+    <string name="discard_title">Abandonner les modifications ?</string>
+    <string name="discard_body">Vos modifications de ce contact seront perdues.</string>
+    <string name="discard">Abandonner</string>
+    <string name="save_to">Enregistrer les nouveaux contacts dans</string>
+    <string name="save_to_footer">Les contacts enregistrés sur le téléphone restent uniquement sur ce téléphone. Un compte de synchronisation (comme DAVx⁵) les garde aussi sur votre propre serveur.</string>
+    <string name="account_device">Ce téléphone uniquement</string>
+    <string name="add_to_title">Ajouter à un contact</string>
+
+    <!-- Pickers for other apps -->
+    <string name="pick_contact">Choisir un contact</string>
+    <string name="pick_phone">Choisir un numéro de téléphone</string>
+    <string name="pick_email">Choisir une adresse e-mail</string>
+    <string name="pick_address">Choisir une adresse</string>
+
+    <!-- Import / export -->
+    <string name="import_title">Importer des contacts</string>
+    <string name="import_failed">Impossible de lire ce fichier</string>
+    <string name="import_none">Aucun contact trouvé dans ce fichier</string>
+    <plurals name="import_found">
+        <item quantity="one">%d contact dans ce fichier</item>
+        <item quantity="other">%d contacts dans ce fichier</item>
+    </plurals>
+    <string name="import_and_more">et %1$d de plus</string>
+    <string name="import_footer">Quand l\'interrupteur est activé, les contacts déjà présents sur ce téléphone avec le même nom et le même numéro sont ignorés.</string>
+    <string name="import_skip_dupes">Ignorer les contacts que vous avez déjà</string>
+    <string name="import_skip_dupes_sub">Même nom et même numéro</string>
+    <plurals name="import_button">
+        <item quantity="one">Importer %d contact</item>
+        <item quantity="other">Importer %d contacts</item>
+    </plurals>
+    <string name="import_progress">Importation de %1$d sur %2$d</string>
+    <plurals name="import_done">
+        <item quantity="one">%d contact importé</item>
+        <item quantity="other">%d contacts importés</item>
+    </plurals>
+    <plurals name="import_skipped">
+        <item quantity="one">%d était déjà sur ce téléphone et a été ignoré</item>
+        <item quantity="other">%d étaient déjà sur ce téléphone et ont été ignorés</item>
+    </plurals>
+    <string name="done">Terminé</string>
+
+    <!-- Duplicates and merging -->
+    <string name="find_duplicates">Trouver les doublons</string>
+    <string name="duplicates_title">Doublons</string>
+    <string name="duplicates_none">Aucun doublon trouvé</string>
+    <string name="duplicates_none_body">Aucun contact ne partage un numéro, une adresse e-mail ou un nom, à part ceux que vous avez marqués comme n\'étant pas des doublons.</string>
+    <string name="duplicates_intro">Ces contacts partagent un numéro, une adresse e-mail ou un nom. Fusionner les réunit en un seul contact : rien n\'est supprimé, chaque compte garde sa propre copie, et vous pouvez les séparer à nouveau depuis la page du contact.</string>
+    <string name="reason_phone">Même numéro · %1$s</string>
+    <string name="reason_email">Même e-mail · %1$s</string>
+    <string name="reason_name">Même nom · %1$s</string>
+    <plurals name="reason_more">
+        <item quantity="one">Et %1$d autre point commun</item>
+        <item quantity="other">Et %1$d autres points communs</item>
+    </plurals>
+    <string name="merge">Fusionner</string>
+    <string name="not_duplicates">Pas des doublons</string>
+    <string name="merge_read_only_note">Les contacts %1$s restent tels quels : la fusion les affiche seulement avec les autres.</string>
+    <string name="merge_failed">Impossible de fusionner ces contacts</string>
+    <string name="merged_into">Fusionné dans %1$s</string>
+    <string name="undo">Annuler</string>
+    <string name="close">Fermer</string>
+    <string name="separated">Séparés à nouveau</string>
+    <string name="separate_failed">Impossible de séparer les contacts</string>
+    <string name="separate">Séparer les contacts fusionnés</string>
+    <plurals name="separate_sub">
+        <item quantity="one">Fusionné dans ContactCtrl à partir de %1$d contact ; le sépare à nouveau</item>
+        <item quantity="other">Fusionné dans ContactCtrl à partir de %1$d contacts ; les sépare à nouveau</item>
+    </plurals>
+    <plurals name="duplicates_found">
+        <item quantity="one">%1$d groupe de doublons probables.</item>
+        <item quantity="other">%1$d groupes de doublons probables.</item>
+    </plurals>
+
+    <!-- Settings -->
+    <string name="group_list">Liste des contacts</string>
+    <string name="name_order">Afficher les noms</string>
+    <string name="name_order_first">Prénom d\'abord</string>
+    <string name="name_order_last">Nom d\'abord</string>
+    <string name="sort_by">Trier par</string>
+    <string name="sort_first">Prénom</string>
+    <string name="sort_last">Nom</string>
+    <string name="show_numbers">Afficher les numéros</string>
+    <string name="show_numbers_sub">Le numéro de chaque contact sous son nom dans la liste</string>
+    <string name="tap_to_call">Appuyer sur un numéro pour appeler</string>
+    <string name="tap_to_call_sub">Appelle tout de suite. Désactivé : le numéro s\'ouvre d\'abord dans votre appli Téléphone</string>
+    <string name="group_new_contacts">Nouveaux contacts</string>
+    <string name="group_import_export">Import et export</string>
+    <string name="import_export_footer">Un fichier .vcf fonctionne avec toutes les applis de contacts et tous les téléphones. L\'export crée un fichier à l\'endroit de votre choix ; rien n\'est envoyé en ligne.</string>
+    <string name="import_vcf">Importer un fichier .vcf</string>
+    <string name="import_vcf_sub">Ajouter les contacts d\'un fichier venant d\'un autre téléphone ou d\'une autre appli</string>
+    <string name="export_vcf">Exporter tous les contacts</string>
+    <string name="export_vcf_sub">Enregistrer tous les contacts dans un seul fichier .vcf</string>
+    <string name="export_running">Exportation…</string>
+    <string name="export_failed">Impossible d\'exporter les contacts</string>
+    <plurals name="export_done">
+        <item quantity="one">%d contact exporté</item>
+        <item quantity="other">%d contacts exportés</item>
+    </plurals>
+
+    <!-- Messaging handles and relations -->
+    <string name="group_ims">Messagerie</string>
+    <string name="add_im">Ajouter un identifiant de messagerie</string>
+    <string name="im_other">Messagerie</string>
+    <string name="group_relations">Relations</string>
+    <string name="add_relation">Ajouter une relation</string>
+
+    <!-- Filter and labels -->
+    <string name="filter_title">Afficher</string>
+    <string name="filter_all">Tous les contacts</string>
+    <string name="filter_accounts">Comptes</string>
+    <string name="filter_clear">Afficher tous les contacts</string>
+    <string name="filter_showing">%1$s · %2$d</string>
+    <string name="filter_empty">Aucun contact ici</string>
+    <string name="labels_title">Libellés</string>
+    <string name="labels_manage">Gérer les libellés</string>
+    <string name="labels_manage_sub">Ajouter, renommer ou supprimer des libellés</string>
+    <string name="labels_new">Nouveau libellé</string>
+    <string name="labels_new_in">Nouveau libellé dans</string>
+    <string name="labels_add">Ajouter</string>
+    <string name="labels_rename">Renommer le libellé</string>
+    <string name="labels_delete_title">Supprimer le libellé « %1$s » ?</string>
+    <string name="labels_delete_body">Seul le libellé est supprimé. Les contacts qu\'il contient restent exactement tels quels.</string>
+    <string name="labels_empty">Aucun libellé pour l\'instant</string>
+    <string name="labels_empty_body">Les libellés regroupent des contacts, comme Famille ou Travail. Appuyez sur + pour en ajouter un.</string>
+    <string name="labels_fixed">défini par le compte</string>
+    <string name="labels_none">Aucun</string>
+    <string name="labels_none_here">Les comptes de ce contact n\'ont encore aucun libellé. Un libellé appartient à un seul compte et ne peut contenir que des contacts enregistrés dans ce compte.</string>
+    <string name="labels_failed">Cela n\'a pas fonctionné. Le compte ne le permet peut-être pas.</string>
+    <plurals name="labels_members">
+        <item quantity="one">%d contact</item>
+        <item quantity="other">%d contacts</item>
+    </plurals>
+
+    <!-- QR code -->
+    <string name="qr_share">Afficher en code QR</string>
+    <string name="qr_title">Code QR</string>
+    <string name="qr_description">Code QR de %1$s</string>
+    <string name="qr_hint">Scannez-le avec l\'appareil photo d\'un autre téléphone pour ajouter ce contact. Sans photo ; créé sur ce téléphone, rien n\'est envoyé.</string>
+    <string name="qr_hint_no_note">Scannez-le avec l\'appareil photo d\'un autre téléphone pour ajouter ce contact. La note et la photo ne rentraient pas et sont omises.</string>
+    <string name="qr_too_big">Ce contact contient trop d\'informations pour un seul code QR. Partagez-le plutôt sous forme de fichier.</string>
+
+    <!-- SIM import -->
+    <string name="import_sim">Importer depuis la carte SIM</string>
+    <string name="import_sim_sub">Copier les contacts enregistrés sur votre SIM vers ce téléphone ou un compte</string>
+    <string name="import_sim_title">Importer depuis la SIM</string>
+    <string name="import_sim_none">Il n\'y a aucun contact sur la carte SIM</string>
+    <string name="import_sim_failed">Impossible de lire la carte SIM</string>
+    <string name="import_sim_failed_body">Vérifiez qu\'une carte SIM est dans le téléphone et qu\'elle est déverrouillée. Avec deux SIM, ContactCtrl lit celle que votre téléphone utilise par défaut.</string>
+    <plurals name="import_sim_found">
+        <item quantity="one">%d contact sur la carte SIM</item>
+        <item quantity="other">%d contacts sur la carte SIM</item>
+    </plurals>
+
+    <!-- Birthday reminders -->
+    <string name="group_birthdays">Anniversaires</string>
+    <string name="birthday_reminders">Rappels d\'anniversaire</string>
+    <string name="birthday_reminders_sub">Une notification le jour de l\'anniversaire d\'un contact</string>
+    <string name="birthday_time">Me rappeler à</string>
+    <string name="birthday_footer">Vérifié sur le téléphone une fois par jour. Android peut l\'envoyer jusqu\'à une heure plus tard pour économiser la batterie. Sur l\'écran de verrouillage, la notification indique seulement que c\'est l\'anniversaire de quelqu\'un.</string>
+    <string name="birthday_no_permission">Sans l\'autorisation d\'afficher des notifications, ContactCtrl ne peut pas vous le rappeler. Vous pouvez l\'autoriser dans les paramètres Android de l\'appli.</string>
+    <string name="birthday_channel">Anniversaires</string>
+    <string name="birthday_today">Anniversaire aujourd\'hui</string>
+    <string name="birthday_public">Un anniversaire aujourd\'hui</string>
+    <plurals name="birthday_turns">
+        <item quantity="one">Fête ses %d an aujourd\'hui</item>
+        <item quantity="other">Fête ses %d ans aujourd\'hui</item>
+    </plurals>
+
+    <!-- Scheduled backup -->
+    <string name="group_backup">Sauvegarde planifiée</string>
+    <string name="backup_scheduled">Sauvegarder automatiquement</string>
+    <string name="backup_scheduled_sub">Tous les contacts dans un fichier .vcf, dans un dossier de ce téléphone</string>
+    <string name="backup_folder">Dossier</string>
+    <string name="backup_folder_none">Non choisi</string>
+    <string name="backup_folder_failed">ContactCtrl ne peut pas garder l\'accès à ce dossier. Choisissez-en un autre.</string>
+    <string name="backup_every">Fréquence</string>
+    <string name="backup_daily">Tous les jours</string>
+    <string name="backup_weekly">Toutes les semaines</string>
+    <string name="backup_keep">Conserver</string>
+    <plurals name="backup_keep_n">
+        <item quantity="one">La sauvegarde la plus récente</item>
+        <item quantity="other">Les %d sauvegardes les plus récentes</item>
+    </plurals>
+    <string name="backup_now">Sauvegarder maintenant</string>
+    <string name="backup_running">Sauvegarde…</string>
+    <string name="backup_done">Sauvegarde enregistrée</string>
+    <string name="backup_never">Aucune sauvegarde pour l\'instant</string>
+    <string name="backup_last">Dernière sauvegarde : %1$s</string>
+    <string name="backup_last_failed">La dernière sauvegarde a échoué. Vérifiez que le dossier existe toujours, ou choisissez-le à nouveau.</string>
+    <string name="backup_footer">S\'exécute quand la batterie n\'est pas faible, cela peut donc prendre un peu de temps. Le fichier n\'est pas chiffré, comme un export : choisissez un dossier auquel vous seul avez accès. Seuls les fichiers de sauvegarde créés par ContactCtrl (contactctrl-backup-…) sont supprimés pour garder le nombre choisi. Les contacts privés n\'y figurent pas.</string>
+
+    <!-- Private contacts -->
+    <string name="tab_private">Privés</string>
+    <string name="private_new">Nouveau contact privé</string>
+    <string name="private_edit">Modifier le contact privé</string>
+    <string name="private_empty">Aucun contact privé</string>
+    <string name="private_empty_body">Les contacts privés restent dans ContactCtrl, chiffrés. Les autres applis ne les voient pas : votre appli Téléphone, vos messageries et vos sauvegardes n\'afficheront pas leurs noms. Appuyez sur + pour en ajouter un, ou utilisez Rendre privé sur la page d\'un contact.</string>
+    <string name="private_unreadable">Impossible d\'ouvrir les contacts privés</string>
+    <string name="private_unreadable_body">La clé qui les chiffre n\'est plus disponible sur ce téléphone (par exemple après une restauration depuis un autre téléphone), ou le fichier est endommagé. ContactCtrl laisse le fichier exactement tel quel et ne modifie rien.</string>
+    <string name="private_save_failed">Impossible d\'enregistrer le contact privé. Rien n\'est enregistré sans chiffrement.</string>
+    <string name="private_detail_footer">Privé : gardé uniquement dans ContactCtrl, chiffré sur ce téléphone. Les autres applis ne voient pas ce contact.</string>
+    <string name="private_move_in">Rendre privé</string>
+    <string name="private_move_in_title">Rendre %1$s privé ?</string>
+    <string name="private_move_in_body">Le contact est copié dans les contacts privés chiffrés de ContactCtrl, puis supprimé des contacts de votre téléphone et de tous les comptes où il se trouve (les comptes synchronisés le suppriment aussi de leur côté). La photo, la sonnerie et les libellés ne suivent pas. Les autres applis n\'afficheront plus ce nom.</string>
+    <string name="private_move_in_partial">La copie privée est enregistrée, mais le contact n\'a pas pu être supprimé des contacts de votre téléphone. Supprimez-le vous-même si vous le souhaitez.</string>
+    <string name="private_move_out">Déplacer vers les contacts du téléphone</string>
+    <string name="private_move_out_title">Déplacer %1$s vers les contacts de votre téléphone ?</string>
+    <string name="private_move_out_body">Le contact est enregistré dans les contacts de votre téléphone (là où vont les nouveaux contacts), où les autres applis et comptes peuvent le voir. La copie privée est ensuite supprimée.</string>
+    <string name="private_moved_out">Déplacé vers les contacts de votre téléphone</string>
+    <string name="private_move_failed">Impossible de déplacer le contact. La copie privée est conservée.</string>
+    <string name="private_delete_body">Le contact privé est supprimé définitivement. Il n\'en existe aucune copie ailleurs.</string>
+
+    <!-- Settings file -->
+    <string name="group_settings_file">Fichier de paramètres</string>
+    <string name="settings_export">Exporter les paramètres</string>
+    <string name="settings_export_sub">Enregistrer les paramètres de ContactCtrl dans un fichier</string>
+    <string name="settings_import">Importer les paramètres</string>
+    <string name="settings_import_sub">Utiliser les paramètres d\'un fichier que vous avez exporté</string>
+    <string name="settings_file_footer">Uniquement les paramètres. Jamais vos contacts, vos contacts privés, le code du verrouillage ni le dossier de sauvegarde. Un import ne désactive jamais Masquer dans les captures d\'écran ni Masquer dans les applis récentes, et ne modifie pas le verrouillage de l\'appli.</string>
+    <string name="settings_file_saved">Paramètres enregistrés</string>
+    <string name="settings_file_failed">Impossible d\'enregistrer le fichier</string>
+    <string name="settings_file_invalid">Ce n\'est pas un fichier de paramètres ContactCtrl, ou il vient d\'une version plus récente.</string>
+    <string name="settings_file_same">Vos paramètres correspondent déjà à ce fichier.</string>
+    <string name="settings_import_title">Remplacer ces paramètres ?</string>
+    <string name="settings_import_body">Ces paramètres seront remplacés par ceux du fichier :\n\n%1$s</string>
+    <string name="settings_import_replace">Remplacer</string>
+    <string name="settings_imported">Paramètres importés</string>
+</resources>
