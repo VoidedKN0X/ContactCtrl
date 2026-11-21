@@ -38,6 +38,7 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Tune
+import androidx.compose.material.icons.outlined.QrCode2
 import androidx.compose.material.icons.automirrored.outlined.Label
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.People
@@ -121,6 +122,7 @@ fun DetailScreen(id: Long, key: String) {
     var confirmDelete by remember { mutableStateOf(false) }
     var pendingCall by remember { mutableStateOf<String?>(null) }
     var labelSheet by remember { mutableStateOf(false) }
+    var showQr by remember { mutableStateOf(false) }
     val groups by c.contacts.groups.collectAsStateWithLifecycle()
 
     // Reloads whenever the contacts change (an edit here, a sync, another app).
@@ -261,6 +263,10 @@ fun DetailScreen(id: Long, key: String) {
                     menu = false
                     scope.launch { shareContacts(context, listOf(d.lookupKey), d.displayName) }
                 }
+                SheetAction(Icons.Outlined.QrCode2, stringResource(R.string.qr_share)) {
+                    menu = false
+                    showQr = true
+                }
                 SheetAction(Icons.Outlined.Delete, stringResource(R.string.delete), danger = true) {
                     menu = false
                     confirmDelete = true
@@ -268,6 +274,7 @@ fun DetailScreen(id: Long, key: String) {
             }
         }
     }
+    if (showQr && d != null) ContactQrDialog(d, onDismiss = { showQr = false })
     if (labelSheet && d != null) {
         val assignable = remember(d, groups) { c.contacts.groupsStore.assignable(d, groups) }
         CtrlBottomSheet(onDismissRequest = { labelSheet = false }) {

@@ -206,3 +206,6 @@ data class ContactDraft(
 data class SaveAccount(val type: String?, val name: String?) {
     val isDevice: Boolean get() = type == null
 }
+
+/** One label a contact is in: the membership row and the raw contact (account part) it belongs to. */
+data class Membership(val dataId: Long, val rawContactId: Long, val groupId: Long)

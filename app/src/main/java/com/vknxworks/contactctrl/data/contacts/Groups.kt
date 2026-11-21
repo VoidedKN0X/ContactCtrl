@@ -32,9 +32,6 @@ data class ContactGroup(
 
 fun accountKey(type: String?, name: String?): String = if (type == null) "" else "$type\u0000${name.orEmpty()}"
 
-/** One label a contact is in: the membership row and the raw contact (account part) it belongs to. */
-data class Membership(val dataId: Long, val rawContactId: Long, val groupId: Long)
-
 /** Reads and changes labels. Membership is always written into the raw contact of the label's own account. */
 class GroupsStore(private val resolver: ContentResolver) {
 

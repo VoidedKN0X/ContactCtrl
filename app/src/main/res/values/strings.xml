@@ -245,4 +245,12 @@
         <item quantity="one">%d contact</item>
         <item quantity="other">%d contacts</item>
     </plurals>
+
+    <!-- QR code -->
+    <string name="qr_share">Show as QR code</string>
+    <string name="qr_title">QR code</string>
+    <string name="qr_description">QR code for %1$s</string>
+    <string name="qr_hint">Scan it with another phone\'s camera to add this contact. No photo; made on this phone, nothing is sent.</string>
+    <string name="qr_hint_no_note">Scan it with another phone\'s camera to add this contact. The note and photo didn\'t fit and are left out.</string>
+    <string name="qr_too_big">This contact has too much information for one QR code. Share it as a file instead.</string>
 </resources>

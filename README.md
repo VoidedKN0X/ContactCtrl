@@ -20,7 +20,7 @@ Part of the [Ctrl series](#the-ctrl-series) by VKNXWorks.
 - **Safe with every account:** only what changed is written, and only to accounts that sync changes back. Contacts from messengers like WhatsApp or Signal are shown but never changed, so a sync can't undo or duplicate your edits
 - **Choose where new contacts go:** this phone only, or a sync account like DAVx⁵
 - **Labels and account filter:** show all contacts, only those of one account (this phone, DAVx⁵, a messenger, ...) or only one label. Put a contact in labels from its page, and add, rename or delete labels (deleting a label never deletes its contacts). Labels are Android's own contact groups, so they sync with accounts that support them
-- **Favourites** tab, a ringtone per contact, and sharing a contact as a .vcf file
+- **Favourites** tab, a ringtone per contact, sharing a contact as a .vcf file, and **showing a contact as a QR code** another phone's camera can scan to add it (made on the phone, nothing is sent)
 - **Select several contacts** (long-press) to share, favourite or delete them at once
 - **Import and export .vcf files** (vCard 2.1, 3.0 and 4.0, photos included), with duplicates skipped on import. Opening a .vcf file from your file manager imports it too
 - **Find and merge duplicates:** contacts that share a phone number (however it's written), an email address or a name (in any order, with or without accents) are grouped with the reason. Merge joins them the way Android links contacts, across accounts and without deleting anything, with Undo right away and "Separate merged contacts" on the contact's page later. "Not duplicates" is remembered
