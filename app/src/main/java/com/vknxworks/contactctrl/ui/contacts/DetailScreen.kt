@@ -123,6 +123,7 @@ fun DetailScreen(id: Long, key: String) {
     var pendingCall by remember { mutableStateOf<String?>(null) }
     var labelSheet by remember { mutableStateOf(false) }
     var showQr by remember { mutableStateOf(false) }
+    var confirmPrivate by remember { mutableStateOf(false) }
     val groups by c.contacts.groups.collectAsStateWithLifecycle()
 
     // Reloads whenever the contacts change (an edit here, a sync, another app).
@@ -267,6 +268,10 @@ fun DetailScreen(id: Long, key: String) {
                     menu = false
                     showQr = true
                 }
+                SheetAction(Icons.Outlined.Lock, stringResource(R.string.private_move_in)) {
+                    menu = false
+                    confirmPrivate = true
+                }
                 SheetAction(Icons.Outlined.Delete, stringResource(R.string.delete), danger = true) {
                     menu = false
                     confirmDelete = true
@@ -275,6 +280,33 @@ fun DetailScreen(id: Long, key: String) {
         }
     }
     if (showQr && d != null) ContactQrDialog(d, onDismiss = { showQr = false })
+    if (confirmPrivate && d != null) {
+        ConfirmDialog(
+            title = stringResource(R.string.private_move_in_title, d.displayName),
+            body = stringResource(R.string.private_move_in_body),
+            confirm = stringResource(R.string.private_move_in),
+            onDismiss = { confirmPrivate = false },
+            onConfirm = {
+                confirmPrivate = false
+                scope.launch {
+                    // The encrypted private copy is saved first; only once that worked is the contact deleted
+                    // from the phone's contacts storage (in every account, like Delete).
+                    val id = c.privateContacts.save(com.vknxworks.contactctrl.data.contacts.PrivateContact.from(com.vknxworks.contactctrl.data.contacts.ContactDraft.from(d), starred = d.starred))
+                    if (id == null) {
+                        Toast.makeText(context, context.getString(R.string.private_save_failed), Toast.LENGTH_LONG).show()
+                        return@launch
+                    }
+                    if (c.writer.delete(d.id, d.lookupKey)) {
+                        c.contacts.refreshNow()
+                        nav.back()
+                        nav.navigate(com.vknxworks.contactctrl.ui.nav.PrivateDetailRoute(id))
+                    } else {
+                        Toast.makeText(context, context.getString(R.string.private_move_in_partial), Toast.LENGTH_LONG).show()
+                    }
+                }
+            },
+        )
+    }
     if (labelSheet && d != null) {
         val assignable = remember(d, groups) { c.contacts.groupsStore.assignable(d, groups) }
         CtrlBottomSheet(onDismissRequest = { labelSheet = false }) {
@@ -325,7 +357,7 @@ fun DetailScreen(id: Long, key: String) {
 }
 
 @Composable
-private fun Header(d: ContactDetail, version: Int) {
+internal fun Header(d: ContactDetail, version: Int) {
     Column(
         Modifier.fillMaxWidth().padding(horizontal = Gutter, vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -339,7 +371,7 @@ private fun Header(d: ContactDetail, version: Int) {
 }
 
 @Composable
-private fun QuickActions(phone: String?, email: String?, onCall: (String) -> Unit, onText: (String) -> Unit, onEmail: (String) -> Unit) {
+internal fun QuickActions(phone: String?, email: String?, onCall: (String) -> Unit, onText: (String) -> Unit, onEmail: (String) -> Unit) {
     Row(
         Modifier.fillMaxWidth().padding(horizontal = Gutter, vertical = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -380,7 +412,7 @@ private fun QuickAction(icon: ImageVector, label: String, enabled: Boolean, modi
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun FieldRow(
+internal fun FieldRow(
     f: Field,
     icon: ImageVector,
     display: String = f.value,
@@ -424,7 +456,7 @@ private fun FieldRow(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun CopyableText(text: String, icon: ImageVector) {
+internal fun CopyableText(text: String, icon: ImageVector) {
     val context = LocalContext.current
     Row(
         Modifier.fillMaxWidth().combinedClickable(onClick = {}, onLongClick = { copy(context, text) }).padding(16.dp),

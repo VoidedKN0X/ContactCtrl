@@ -13,6 +13,7 @@ Part of the [Ctrl series](#the-ctrl-series) by VKNXWorks.
 ## Features
 
 - **Works fully offline.** ContactCtrl doesn't have the internet permission and never goes online. It reads and writes Android's own contacts storage, which every app and sync account shares, so nothing is duplicated
+- **Private contacts:** a Private tab for contacts that stay inside ContactCtrl, encrypted on the phone (AES-256-GCM with a key held by Android's Keystore), where no other app can read them. *Make private* moves a contact there from your phone contacts; *Move to phone contacts* moves it back. Other apps (dialler, messengers, pickers, backups) don't see private contacts, so they don't show their names
 - **Fast search** over names, nicknames, phone numbers (any part, with or without the country code) and email addresses. Accents don't matter: "zoe" finds "Zoë"
 - **Alphabetical list** with letter headers and your favourites on top; first or last name first, sorted by first or last name
 - **Contact page** with one-tap call, message and email, every number, email, address (opens in your maps app), website, date and note. Long-press anything to copy it
@@ -108,7 +109,7 @@ Turn it on under **Settings > Privacy and security > App lock** (tap your profil
 
 **Telemetry-free.** ContactCtrl has no analytics, crash reporting, usage stats or tracking of any kind. It has **no internet permission**, works fully offline and never connects to the internet. Every build checks that the app has no network permission and no Google libraries.
 
-- Your contacts stay in Android's contacts storage and in the accounts you chose. ContactCtrl keeps no copy of them; its own files hold only its settings.
+- Your contacts stay in Android's contacts storage and in the accounts you chose. ContactCtrl keeps no copy of them. Its own files hold its settings and your private contacts; the private contacts file is always encrypted, never written in plain text, and a file ContactCtrl can't open is left alone rather than overwritten. Private contacts are not in exports, scheduled backups or Android's backup.
 - A contact you share becomes a .vcf file in ContactCtrl's private cache, readable only by the app you share it with, and only for that share. The file is replaced on the next share, and any file left from an earlier run is deleted when ContactCtrl starts and when it locks.
 - Exporting and the scheduled backup write a file only to the place you choose. Nothing is uploaded. The backup deletes only its own older backup files (named `contactctrl-backup-…`), never anything else in that folder.
 - Birthday reminders are worked out on the phone; on the lock screen they don't show the name.

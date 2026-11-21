@@ -26,6 +26,14 @@ class AppContainer(val context: Context) {
     val contacts = ContactsRepository(context, appScope)
     val writer = ContactWriter(context.contentResolver)
 
+    /** The data key for files ContactCtrl keeps encrypted at rest (the shared Ctrl series helpers). */
+    private val dataKeys = com.vknxworks.contactctrl.data.crypto.DataKeyStore(
+        context.filesDir, com.vknxworks.contactctrl.data.crypto.KeystoreWrapper("contactctrl_data_at_rest"),
+    )
+
+    /** Private contacts: encrypted, inside ContactCtrl only. */
+    val privateContacts = com.vknxworks.contactctrl.data.contacts.PrivateContactsStore(context, appScope, dataKeys)
+
     /** Merging and separating duplicates, and the "not duplicates" answers. */
     val merger by lazy { com.vknxworks.contactctrl.data.duplicates.Merger(context, appScope) }
 

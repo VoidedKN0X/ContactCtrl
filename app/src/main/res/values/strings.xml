@@ -303,4 +303,25 @@
     <string name="backup_last">Last backup: %1$s</string>
     <string name="backup_last_failed">The last backup failed. Check that the folder still exists, or pick it again.</string>
     <string name="backup_footer">Runs when the battery isn\'t low, so it may wait a bit. The file isn\'t encrypted, like an export: pick a folder only you can reach. Only backup files ContactCtrl made itself (contactctrl-backup-…) are deleted to keep the number you chose. Private contacts aren\'t in it.</string>
+
+    <!-- Private contacts -->
+    <string name="tab_private">Private</string>
+    <string name="private_new">New private contact</string>
+    <string name="private_edit">Edit private contact</string>
+    <string name="private_empty">No private contacts</string>
+    <string name="private_empty_body">Private contacts stay inside ContactCtrl, encrypted. Other apps can\'t see them: your dialler, messengers and backups won\'t show their names. Tap + to add one, or use Make private on a contact\'s page.</string>
+    <string name="private_unreadable">Private contacts can\'t be opened</string>
+    <string name="private_unreadable_body">The key that encrypts them isn\'t available on this phone any more (for example after restoring the phone from another one), or the file is damaged. ContactCtrl leaves the file exactly as it is and changes nothing.</string>
+    <string name="private_save_failed">Couldn\'t save the private contact. Nothing is saved unencrypted.</string>
+    <string name="private_detail_footer">Private: kept only in ContactCtrl, encrypted on this phone. Other apps don\'t see this contact.</string>
+    <string name="private_move_in">Make private</string>
+    <string name="private_move_in_title">Make %1$s private?</string>
+    <string name="private_move_in_body">The contact is copied into ContactCtrl\'s encrypted private contacts, then deleted from your phone\'s contacts and from every account it is in (synced accounts delete it on their side too). The photo, ringtone and labels don\'t come along. Other apps won\'t show this name any more.</string>
+    <string name="private_move_in_partial">The private copy is saved, but the contact couldn\'t be deleted from your phone\'s contacts. Delete it there yourself if you want.</string>
+    <string name="private_move_out">Move to phone contacts</string>
+    <string name="private_move_out_title">Move %1$s to your phone contacts?</string>
+    <string name="private_move_out_body">The contact is saved in your phone\'s contacts (in the place new contacts go), where other apps and accounts can see it. Then the private copy is deleted.</string>
+    <string name="private_moved_out">Moved to your phone contacts</string>
+    <string name="private_move_failed">Couldn\'t move the contact. The private copy is kept.</string>
+    <string name="private_delete_body">The private contact is deleted for good. There is no copy anywhere else.</string>
 </resources>

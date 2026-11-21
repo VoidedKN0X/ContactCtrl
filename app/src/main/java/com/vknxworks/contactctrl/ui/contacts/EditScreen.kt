@@ -1,5 +1,11 @@
 package com.vknxworks.contactctrl.ui.contacts
 
+import androidx.compose.material.icons.outlined.Lock
+import com.vknxworks.contactctrl.data.contacts.PrivateContact
+import com.vknxworks.contactctrl.data.contacts.PrivateContactsStore
+import com.vknxworks.contactctrl.ui.nav.PrivateDetailRoute
+import kotlinx.coroutines.flow.first
+
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -115,12 +121,12 @@ import java.time.ZoneOffset
  * (messengers) aren't shown here, so they can never be changed or removed by accident.
  */
 @Composable
-fun EditScreen(id: Long, key: String, prefill: Boolean) {
+fun EditScreen(id: Long, key: String, prefill: Boolean, privateMode: Boolean = false, privateId: String = "") {
     val context = LocalContext.current
     val c = context.container
     val nav = LocalNavigator.current
     val scope = rememberCoroutineScope()
-    val isNew = id < 0
+    val isNew = if (privateMode) privateId.isEmpty() else id < 0
     var original by remember { mutableStateOf<ContactDetail?>(null) }
     var start by remember { mutableStateOf<ContactDraft?>(null) }
     var draft by remember { mutableStateOf(ContactDraft()) }
@@ -134,6 +140,19 @@ fun EditScreen(id: Long, key: String, prefill: Boolean) {
     val editActivity = context.findActivity() as? EditActivity
 
     LaunchedEffect(id, key) {
+        if (privateMode) {
+            // A private contact: no accounts, no photo, kept encrypted inside ContactCtrl.
+            c.privateContacts.load()
+            val state = c.privateContacts.state.first { it !is PrivateContactsStore.State.Loading }
+            if (state !is PrivateContactsStore.State.Ready) { loadFailed = true; return@LaunchedEffect }
+            val existing = if (isNew) null else state.contacts.firstOrNull { it.id == privateId }
+            if (!isNew && existing == null) { loadFailed = true; return@LaunchedEffect }
+            val d = existing?.toDraft() ?: ContactDraft()
+            draft = d
+            start = d
+            if ((d.name.prefix + d.name.middle + d.name.suffix).isNotBlank()) moreName = true
+            return@LaunchedEffect
+        }
         if (isNew) {
             val fromApp = if (prefill) c.prefill.also { c.prefill = null } else null
             val d = fromApp ?: ContactDraft()
@@ -187,6 +206,20 @@ fun EditScreen(id: Long, key: String, prefill: Boolean) {
             return
         }
         saving = true
+        if (privateMode) {
+            scope.launch {
+                val old = if (isNew) null else c.privateContacts.get(privateId)
+                val saved = c.privateContacts.save(PrivateContact.from(draft, id = old?.id ?: java.util.UUID.randomUUID().toString(), starred = old?.starred ?: false))
+                saving = false
+                if (saved == null) {
+                    Toast.makeText(context, context.getString(R.string.private_save_failed), Toast.LENGTH_LONG).show()
+                } else {
+                    nav.back()
+                    if (isNew) nav.navigate(PrivateDetailRoute(saved))
+                }
+            }
+            return
+        }
         scope.launch {
             val clean = draft.copy(
                 phones = draft.phones.filter { it.value.isNotBlank() || it.dataId != null },
@@ -222,7 +255,7 @@ fun EditScreen(id: Long, key: String, prefill: Boolean) {
 
     Column(Modifier.fillMaxSize()) {
         ScreenTopBar(
-            title = stringResource(if (isNew) R.string.new_contact else R.string.edit_contact),
+            title = stringResource(if (privateMode) (if (isNew) R.string.private_new else R.string.private_edit) else if (isNew) R.string.new_contact else R.string.edit_contact),
             showBack = false,
             actions = {
                 CtrlSquareButton(Icons.Outlined.Close, stringResource(R.string.cancel), onClick = { if (changed) confirmDiscard = true else leave() })
@@ -230,13 +263,14 @@ fun EditScreen(id: Long, key: String, prefill: Boolean) {
             },
         )
         when {
+            loadFailed && privateMode -> MessageView(Icons.Outlined.Lock, stringResource(R.string.private_unreadable), stringResource(R.string.private_unreadable_body))
             loadFailed -> MessageView(Icons.Outlined.Sync, stringResource(R.string.read_only), stringResource(R.string.read_only_body))
             start == null -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = CtrlColors.AccentText) }
             else -> Column(
                 Modifier.fillMaxSize().verticalScroll(rememberScrollState()).imePadding().navigationBarsPadding().padding(bottom = 32.dp),
             ) {
-                // Photo
-                Box(Modifier.fillMaxWidth().padding(top = 4.dp, bottom = 8.dp), contentAlignment = Alignment.Center) {
+                // Photo (phone contacts only: private contacts have none)
+                if (!privateMode) Box(Modifier.fillMaxWidth().padding(top = 4.dp, bottom = 8.dp), contentAlignment = Alignment.Center) {
                     val newPhoto = draft.newPhoto
                     // Read at the size it's shown at, never at full size.
                     val bmp = remember(newPhoto) { newPhoto?.let { com.vknxworks.contactctrl.data.contacts.VCard.decodeSampled(it, 512) } }
@@ -296,7 +330,7 @@ fun EditScreen(id: Long, key: String, prefill: Boolean) {
                     )
                 }
 
-                if (isNew && accounts.size > 1) {
+                if (isNew && !privateMode && accounts.size > 1) {
                     Group(stringResource(R.string.save_to), footer = stringResource(R.string.save_to_footer)) {
                         GroupChoice(
                             stringResource(R.string.save_to),

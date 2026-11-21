@@ -20,7 +20,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Contacts
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Contacts
 import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.Icon
@@ -89,6 +91,7 @@ private fun TopDest.item(): TabItem = TabItem(stringResource(label), icon, selec
 private val topDestinations = listOf(
     TopDest(ContactsRoute, R.string.tab_contacts, Icons.Outlined.Contacts, Icons.Filled.Contacts),
     TopDest(FavouritesRoute, R.string.tab_favourites, Icons.Outlined.StarBorder, Icons.Filled.Star),
+    TopDest(PrivateRoute, R.string.tab_private, Icons.Outlined.Lock, Icons.Filled.Lock),
 )
 
 @Composable
@@ -215,7 +218,9 @@ private fun AppNavHost(navController: NavHostController) {
         composable<YouRoute> { YouScreen() }
         composable<SettingsRoute> { SettingsScreen() }
         composable<DetailRoute> { val r = it.toRoute<DetailRoute>(); Gate { DetailScreen(r.id, r.key) } }
-        composable<EditRoute> { val r = it.toRoute<EditRoute>(); Gate { EditScreen(r.id, r.key, r.prefill) } }
+        composable<EditRoute> { val r = it.toRoute<EditRoute>(); if (r.private) com.vknxworks.contactctrl.ui.contacts.EditScreen(r.id, r.key, false, privateMode = true, privateId = r.privateId) else Gate { EditScreen(r.id, r.key, r.prefill) } }
+        composable<PrivateRoute> { com.vknxworks.contactctrl.ui.contacts.PrivateScreen() }
+        composable<PrivateDetailRoute> { val r = it.toRoute<PrivateDetailRoute>(); com.vknxworks.contactctrl.ui.contacts.PrivateDetailScreen(r.id) }
         composable<AddToRoute> { Gate { AddToScreen() } }
         composable<ImportRoute> { val r = it.toRoute<ImportRoute>(); Gate { ImportScreen(r.uri) } }
         composable<LabelsRoute> { Gate { com.vknxworks.contactctrl.ui.contacts.LabelsScreen() } }
