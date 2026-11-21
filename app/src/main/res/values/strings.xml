@@ -253,4 +253,16 @@
     <string name="qr_hint">Scan it with another phone\'s camera to add this contact. No photo; made on this phone, nothing is sent.</string>
     <string name="qr_hint_no_note">Scan it with another phone\'s camera to add this contact. The note and photo didn\'t fit and are left out.</string>
     <string name="qr_too_big">This contact has too much information for one QR code. Share it as a file instead.</string>
+
+    <!-- SIM import -->
+    <string name="import_sim">Import from the SIM card</string>
+    <string name="import_sim_sub">Copy the contacts saved on your SIM to this phone or an account</string>
+    <string name="import_sim_title">Import from SIM</string>
+    <string name="import_sim_none">There are no contacts on the SIM card</string>
+    <string name="import_sim_failed">Can\'t read the SIM card</string>
+    <string name="import_sim_failed_body">Check that a SIM card is in the phone and unlocked. With two SIMs, ContactCtrl reads the one your phone uses by default.</string>
+    <plurals name="import_sim_found">
+        <item quantity="one">%d contact on the SIM card</item>
+        <item quantity="other">%d contacts on the SIM card</item>
+    </plurals>
 </resources>

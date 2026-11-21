@@ -1,5 +1,8 @@
 package com.vknxworks.contactctrl.ui.contacts
 
+import androidx.compose.material.icons.outlined.SimCard
+import com.vknxworks.contactctrl.data.contacts.SimContacts
+
 import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -70,7 +73,12 @@ fun ImportScreen(uriString: String) {
     var progress by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(uriString) {
-        runCatching { VCard.read(context.contentResolver, Uri.parse(uriString)) }
+        runCatching {
+            kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                if (uriString == SimContacts.SOURCE) SimContacts.read(context.contentResolver)
+                else VCard.read(context.contentResolver, Uri.parse(uriString))
+            }
+        }
             .onSuccess { cards = it }
             .onFailure { error = it.message ?: it.javaClass.simpleName }
         accounts = c.contacts.saveAccounts()
@@ -79,12 +87,14 @@ fun ImportScreen(uriString: String) {
     }
 
     Column(Modifier.fillMaxSize()) {
-        ScreenTopBar(stringResource(R.string.import_title))
+        val fromSim = uriString == SimContacts.SOURCE
+        ScreenTopBar(stringResource(if (fromSim) R.string.import_sim_title else R.string.import_title))
         val list = cards
         when {
+            error != null && fromSim -> MessageView(Icons.Outlined.SimCard, stringResource(R.string.import_sim_failed), stringResource(R.string.import_sim_failed_body))
             error != null -> MessageView(Icons.Outlined.ErrorOutline, stringResource(R.string.import_failed), error)
             list == null -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = CtrlColors.AccentText) }
-            list.isEmpty() -> MessageView(Icons.Outlined.ErrorOutline, stringResource(R.string.import_none))
+            list.isEmpty() -> MessageView(Icons.Outlined.ErrorOutline, stringResource(if (fromSim) R.string.import_sim_none else R.string.import_none))
             done >= 0 -> MessageView(
                 Icons.Outlined.CheckCircle,
                 pluralStringResource(R.plurals.import_done, done, done),
@@ -93,7 +103,7 @@ fun ImportScreen(uriString: String) {
                 onAction = { nav.back() },
             )
             else -> Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).navigationBarsPadding().padding(bottom = 24.dp)) {
-                Group(pluralStringResource(R.plurals.import_found, list.size, list.size)) {
+                Group(if (fromSim) pluralStringResource(R.plurals.import_sim_found, list.size, list.size) else pluralStringResource(R.plurals.import_found, list.size, list.size)) {
                     list.take(8).forEach { d ->
                         GroupRow(d.name.display.ifBlank { d.company.ifBlank { d.phones.firstOrNull()?.value ?: d.emails.firstOrNull()?.value.orEmpty() } }, d.phones.firstOrNull()?.value)
                     }

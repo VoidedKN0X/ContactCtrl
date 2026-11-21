@@ -19,6 +19,7 @@ import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Numbers
 import androidx.compose.material.icons.outlined.Password
 import androidx.compose.material.icons.outlined.PhoneAndroid
+import androidx.compose.material.icons.outlined.SimCard
 import androidx.compose.material.icons.outlined.SortByAlpha
 import androidx.compose.material.icons.outlined.Sync
 import androidx.compose.material.icons.outlined.Timer
@@ -162,6 +163,13 @@ private fun ImportExportGroup() {
                 AppLock.expectReturn()
                 importPicker.launch(arrayOf("text/x-vcard", "text/vcard", "text/directory", "application/octet-stream"))
             }) else null,
+        )
+        GroupRow(
+            stringResource(R.string.import_sim),
+            stringResource(R.string.import_sim_sub),
+            icon = Icons.Outlined.SimCard,
+            showChevron = true,
+            onClick = if (granted) ({ nav.navigate(ImportRoute(com.vknxworks.contactctrl.data.contacts.SimContacts.SOURCE)) }) else null,
         )
         GroupRow(
             stringResource(R.string.export_vcf),
