@@ -37,6 +37,8 @@ import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Tune
+import androidx.compose.material.icons.automirrored.outlined.Label
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Language
@@ -92,6 +94,7 @@ import com.vknxworks.contactctrl.ui.components.CtrlBottomSheet
 import com.vknxworks.contactctrl.ui.components.CtrlSquareButton
 import com.vknxworks.contactctrl.ui.components.Group
 import com.vknxworks.contactctrl.ui.components.GroupRow
+import com.vknxworks.contactctrl.ui.components.GroupSwitch
 import com.vknxworks.contactctrl.ui.components.MessageView
 import com.vknxworks.contactctrl.ui.components.ScreenTopBar
 import com.vknxworks.contactctrl.ui.components.topDivider
@@ -117,6 +120,8 @@ fun DetailScreen(id: Long, key: String) {
     var menu by remember { mutableStateOf(false) }
     var confirmDelete by remember { mutableStateOf(false) }
     var pendingCall by remember { mutableStateOf<String?>(null) }
+    var labelSheet by remember { mutableStateOf(false) }
+    val groups by c.contacts.groups.collectAsStateWithLifecycle()
 
     // Reloads whenever the contacts change (an edit here, a sync, another app).
     LaunchedEffect(id, key, version) {
@@ -201,6 +206,16 @@ fun DetailScreen(id: Long, key: String) {
                     CopyableText(d.note, Icons.AutoMirrored.Outlined.StickyNote2)
                 }
                 Group(stringResource(R.string.group_more), footer = accountsFooter(context, d)) {
+                    val inLabels = remember(d.memberships, groups) {
+                        d.memberships.mapNotNull { m -> groups.firstOrNull { it.id == m.groupId }?.title }.distinct()
+                    }
+                    GroupRow(
+                        stringResource(R.string.labels_title),
+                        if (inLabels.isEmpty()) stringResource(R.string.labels_none) else inLabels.joinToString(", "),
+                        icon = Icons.AutoMirrored.Outlined.Label,
+                        showChevron = true,
+                        onClick = { labelSheet = true },
+                    )
                     GroupRow(
                         stringResource(R.string.ringtone),
                         ringtoneName(context, d.ringtone),
@@ -249,6 +264,38 @@ fun DetailScreen(id: Long, key: String) {
                 SheetAction(Icons.Outlined.Delete, stringResource(R.string.delete), danger = true) {
                     menu = false
                     confirmDelete = true
+                }
+            }
+        }
+    }
+    if (labelSheet && d != null) {
+        val assignable = remember(d, groups) { c.contacts.groupsStore.assignable(d, groups) }
+        CtrlBottomSheet(onDismissRequest = { labelSheet = false }) {
+            Text(stringResource(R.string.labels_title), style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp))
+            Column(Modifier.navigationBarsPadding().padding(bottom = 12.dp)) {
+                if (assignable.isEmpty()) {
+                    Text(
+                        stringResource(if (d.writable) R.string.labels_none_here else R.string.read_only_body),
+                        style = MaterialTheme.typography.bodyMedium, color = CtrlColors.Muted,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
+                    )
+                }
+                val multiAccount = assignable.map { it.accountKey }.distinct().size > 1
+                assignable.forEach { g ->
+                    val member = d.memberships.any { it.groupId == g.id }
+                    GroupSwitch(g.title, if (multiAccount) accountTitle(context, g.accountKey) else null, member, Icons.AutoMirrored.Outlined.Label) { on ->
+                        scope.launch {
+                            val ok = c.contacts.groupsStore.setMember(d, g, on)
+                            if (!ok) Toast.makeText(context, context.getString(R.string.labels_failed), Toast.LENGTH_SHORT).show()
+                            c.contacts.refreshNow()
+                        }
+                    }
+                }
+                if (d.writable) {
+                    SheetAction(Icons.Outlined.Tune, stringResource(R.string.labels_manage)) {
+                        labelSheet = false
+                        nav.navigate(com.vknxworks.contactctrl.ui.nav.LabelsRoute)
+                    }
                 }
             }
         }

@@ -218,4 +218,31 @@
     <string name="im_other">Messaging</string>
     <string name="group_relations">Relations</string>
     <string name="add_relation">Add relation</string>
+
+    <!-- Filter and labels -->
+    <string name="filter_title">Show</string>
+    <string name="filter_all">All contacts</string>
+    <string name="filter_accounts">Accounts</string>
+    <string name="filter_clear">Show all contacts</string>
+    <string name="filter_showing">%1$s · %2$d</string>
+    <string name="filter_empty">No contacts here</string>
+    <string name="labels_title">Labels</string>
+    <string name="labels_manage">Manage labels</string>
+    <string name="labels_manage_sub">Add, rename or delete labels</string>
+    <string name="labels_new">New label</string>
+    <string name="labels_new_in">New label in</string>
+    <string name="labels_add">Add</string>
+    <string name="labels_rename">Rename label</string>
+    <string name="labels_delete_title">Delete the label “%1$s”?</string>
+    <string name="labels_delete_body">Only the label is deleted. The contacts in it stay exactly as they are.</string>
+    <string name="labels_empty">No labels yet</string>
+    <string name="labels_empty_body">Labels group contacts, like Family or Work. Tap + to add one.</string>
+    <string name="labels_fixed">set by the account</string>
+    <string name="labels_none">None</string>
+    <string name="labels_none_here">There are no labels in this contact\'s accounts yet. A label belongs to one account and can only hold contacts saved in that account.</string>
+    <string name="labels_failed">That didn\'t work. The account may not allow it.</string>
+    <plurals name="labels_members">
+        <item quantity="one">%d contact</item>
+        <item quantity="other">%d contacts</item>
+    </plurals>
 </resources>

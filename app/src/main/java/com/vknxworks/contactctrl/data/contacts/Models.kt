@@ -16,6 +16,10 @@ data class ContactSummary(
     val starred: Boolean,
     val phones: List<String> = emptyList(),
     val emails: List<String> = emptyList(),
+    /** The accounts this contact has a part in ([accountKey] format: "" for the phone itself). */
+    val accounts: Set<String> = emptySet(),
+    /** The labels (groups) it is in. */
+    val groups: Set<Long> = emptySet(),
 ) {
     /** Lower-case, accent-free name text for search ("Zoë" matches "zoe"). */
     val searchName: String = fold("$name $altName")
@@ -139,6 +143,8 @@ data class ContactDetail(
     val relations: List<Field> = emptyList(),
     /** Messaging handles (Signal, Matrix, Telegram, ...). */
     val ims: List<Field> = emptyList(),
+    /** The labels it is in, per raw contact. */
+    val memberships: List<Membership> = emptyList(),
     val photoUri: String?,
     val starred: Boolean,
     val ringtone: String?,

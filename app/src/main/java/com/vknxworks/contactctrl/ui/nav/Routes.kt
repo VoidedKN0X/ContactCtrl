@@ -22,3 +22,6 @@ import kotlinx.serialization.Serializable
 
 // Importing a .vcf file
 @Serializable data class ImportRoute(val uri: String)
+
+// Labels (Android's contact groups): add, rename, delete
+@Serializable data object LabelsRoute

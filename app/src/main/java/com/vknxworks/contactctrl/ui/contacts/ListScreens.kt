@@ -3,7 +3,9 @@ package com.vknxworks.contactctrl.ui.contacts
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +25,10 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.FilterList
+import androidx.compose.material.icons.automirrored.outlined.Label
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Search
@@ -54,6 +59,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vknxworks.contactctrl.R
 import com.vknxworks.contactctrl.container
+import com.vknxworks.contactctrl.data.contacts.Accounts
+import com.vknxworks.contactctrl.data.contacts.ContactGroup
 import com.vknxworks.contactctrl.data.contacts.ContactSummary
 import com.vknxworks.contactctrl.data.settings.AppSettings
 import com.vknxworks.contactctrl.data.settings.NameOrder
@@ -61,7 +68,9 @@ import com.vknxworks.contactctrl.data.settings.SortBy
 import com.vknxworks.contactctrl.ui.common.ContactAvatar
 import com.vknxworks.contactctrl.ui.common.EmptyContacts
 import com.vknxworks.contactctrl.ui.components.ConfirmDialog
+import com.vknxworks.contactctrl.ui.components.CtrlBottomSheet
 import com.vknxworks.contactctrl.ui.components.CtrlSquareButton
+import com.vknxworks.contactctrl.ui.components.GroupRow
 import com.vknxworks.contactctrl.ui.components.CtrlTextField
 import com.vknxworks.contactctrl.ui.components.MessageView
 import com.vknxworks.contactctrl.ui.components.SectionLabel
@@ -72,6 +81,7 @@ import com.vknxworks.contactctrl.ui.nav.DetailRoute
 import com.vknxworks.contactctrl.ui.nav.DuplicatesRoute
 import androidx.compose.material.icons.automirrored.outlined.CallMerge
 import com.vknxworks.contactctrl.ui.nav.EditRoute
+import com.vknxworks.contactctrl.ui.nav.LabelsRoute
 import com.vknxworks.contactctrl.ui.nav.LocalNavigator
 import com.vknxworks.contactctrl.ui.theme.CtrlColors
 import com.vknxworks.contactctrl.ui.theme.CtrlType
@@ -112,11 +122,16 @@ fun ContactsScreen() {
     val loaded by c.contacts.loaded.collectAsStateWithLifecycle()
     val settings by c.settings.settings.collectAsStateWithLifecycle()
     var query by rememberSaveable { mutableStateOf("") }
+    // "" all contacts, "a:<account key>" one account, "g:<label id>" one label. Kept while the app runs.
+    var filter by rememberSaveable { mutableStateOf("") }
+    var filterSheet by remember { mutableStateOf(false) }
+    val groups by c.contacts.groups.collectAsStateWithLifecycle()
     var selected by remember { mutableStateOf(setOf<Long>()) }
     var confirmDelete by remember { mutableStateOf(false) }
     val sorted = remember(all, settings.sortBy) { all.sortedFor(settings) }
-    val shown = remember(sorted, query) {
-        if (query.isBlank()) sorted else ContactSummary.Query.of(query).let { q -> sorted.filter { it.matches(q) } }
+    val filtered = remember(sorted, filter) { sorted.filterBy(filter) }
+    val shown = remember(filtered, query) {
+        if (query.isBlank()) filtered else ContactSummary.Query.of(query).let { q -> filtered.filter { it.matches(q) } }
     }
     // Favourites and the A-Z sections are worked out once per list, not again whenever the list is rebuilt
     // (for example each time a contact is ticked while selecting).
@@ -151,6 +166,10 @@ fun ContactsScreen() {
                 stringResource(R.string.tab_contacts),
                 label = if (loaded) pluralStringResource(R.plurals.contact_count, all.size, all.size) else null,
                 trailing = {
+                    CtrlSquareButton(
+                        Icons.Outlined.FilterList, stringResource(R.string.filter_title), onClick = { filterSheet = true },
+                        tint = if (filter.isEmpty()) CtrlColors.Text else CtrlColors.AccentText,
+                    )
                     if (all.size >= 2) {
                         CtrlSquareButton(Icons.AutoMirrored.Outlined.CallMerge, stringResource(R.string.find_duplicates), onClick = { nav.navigate(DuplicatesRoute) })
                     }
@@ -159,9 +178,13 @@ fun ContactsScreen() {
             )
         }
         SearchField(query, onChange = { query = it })
+        if (filter.isNotEmpty()) {
+            FilterBar(filterLabel(context, filter, groups), count = filtered.size, onClear = { filter = "" })
+        }
         when {
             !loaded -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = CtrlColors.AccentText) }
             all.isEmpty() -> EmptyContacts(Modifier.bottomClearance())
+            filtered.isEmpty() -> MessageView(Icons.Outlined.FilterList, stringResource(R.string.filter_empty), modifier = Modifier.bottomClearance())
             shown.isEmpty() -> MessageView(Icons.Outlined.Search, stringResource(R.string.search_none, query.trim()), modifier = Modifier.bottomClearance())
             else -> LazyColumn(
                 state = listState,
@@ -188,6 +211,16 @@ fun ContactsScreen() {
                 item { Spacer(Modifier.bottomClearance(0.dp)) }
             }
         }
+    }
+    if (filterSheet) {
+        FilterSheet(
+            all = all,
+            groups = groups,
+            current = filter,
+            onDismiss = { filterSheet = false },
+            onPick = { filter = it; filterSheet = false },
+            onManage = { filterSheet = false; nav.navigate(LabelsRoute) },
+        )
     }
     if (confirmDelete) {
         val n = selected.size
@@ -226,6 +259,92 @@ fun FavouritesScreen() {
                 item { Spacer(Modifier.bottomClearance(0.dp)) }
             }
         }
+    }
+}
+
+/** The contacts [filter] keeps ("" keeps all; see [ContactsScreen]). */
+fun List<ContactSummary>.filterBy(filter: String): List<ContactSummary> = when {
+    filter.startsWith("a:") -> filter.removePrefix("a:").let { key -> this.filter { key in it.accounts } }
+    filter.startsWith("g:") -> filter.removePrefix("g:").toLongOrNull()?.let { id -> this.filter { id in it.groups } } ?: this
+    else -> this
+}
+
+/** How an account is named in lists: "This phone", or "DAVx⁵ · me@example.org". */
+fun accountTitle(context: android.content.Context, key: String): String {
+    if (key.isEmpty()) return context.getString(R.string.account_device)
+    val type = key.substringBefore('\u0000')
+    val name = key.substringAfter('\u0000', "")
+    return if (name.isBlank()) Accounts.label(type) else Accounts.label(type) + " · " + name
+}
+
+private fun filterLabel(context: android.content.Context, filter: String, groups: List<ContactGroup>): String = when {
+    filter.startsWith("a:") -> accountTitle(context, filter.removePrefix("a:"))
+    filter.startsWith("g:") -> groups.firstOrNull { it.id.toString() == filter.removePrefix("g:") }?.title ?: context.getString(R.string.labels_title)
+    else -> ""
+}
+
+@Composable
+private fun FilterBar(label: String, count: Int, onClear: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().padding(horizontal = Gutter, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(Icons.Outlined.FilterList, null, Modifier.size(18.dp), tint = CtrlColors.AccentText)
+        Spacer(Modifier.width(8.dp))
+        Text(
+            stringResource(R.string.filter_showing, label, count),
+            style = CtrlType.Data, color = CtrlColors.AccentText, maxLines = 1, overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f),
+        )
+        CtrlSquareButton(Icons.Outlined.Close, stringResource(R.string.filter_clear), onClick = onClear, size = 36.dp, tint = CtrlColors.Muted)
+    }
+}
+
+/** Show all contacts, one account's, or one label's; and the way to the labels page. */
+@Composable
+private fun FilterSheet(
+    all: List<ContactSummary>,
+    groups: List<ContactGroup>,
+    current: String,
+    onDismiss: () -> Unit,
+    onPick: (String) -> Unit,
+    onManage: () -> Unit,
+) {
+    val context = LocalContext.current
+    val accounts = remember(all) { all.flatMap { it.accounts }.distinct().sortedWith(compareBy({ it.isNotEmpty() }, { it.lowercase() })) }
+    val groupCounts = remember(all) { HashMap<Long, Int>().also { m -> all.forEach { s -> s.groups.forEach { g -> m[g] = (m[g] ?: 0) + 1 } } } }
+    CtrlBottomSheet(onDismissRequest = onDismiss) {
+        Text(stringResource(R.string.filter_title), style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp))
+        LazyColumn(Modifier.navigationBarsPadding(), contentPadding = PaddingValues(bottom = 16.dp)) {
+            item(key = "all") { FilterOption(stringResource(R.string.filter_all), null, current.isEmpty()) { onPick("") } }
+            if (accounts.isNotEmpty()) {
+                item(key = "h-acc") { Box(Modifier.padding(horizontal = 24.dp, vertical = 10.dp)) { SectionLabel(stringResource(R.string.filter_accounts)) } }
+                items(accounts, key = { "a:$it" }) { key ->
+                    FilterOption(accountTitle(context, key), all.count { key in it.accounts }.toString(), current == "a:$key") { onPick("a:$key") }
+                }
+            }
+            item(key = "h-lab") { Box(Modifier.padding(horizontal = 24.dp, vertical = 10.dp)) { SectionLabel(stringResource(R.string.labels_title)) } }
+            items(groups, key = { "g:${it.id}" }) { g ->
+                FilterOption(g.title, (groupCounts[g.id] ?: 0).toString() + " · " + accountTitle(context, g.accountKey), current == "g:${g.id}") { onPick("g:${g.id}") }
+            }
+            item(key = "manage") {
+                GroupRow(stringResource(R.string.labels_manage), stringResource(R.string.labels_manage_sub), icon = Icons.AutoMirrored.Outlined.Label, showChevron = true, onClick = onManage)
+            }
+        }
+    }
+}
+
+@Composable
+private fun FilterOption(label: String, sub: String?, selected: Boolean, onClick: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().heightIn(min = 52.dp).clickable(onClick = onClick).padding(horizontal = 24.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(label, style = MaterialTheme.typography.bodyLarge, color = if (selected) CtrlColors.AccentText else CtrlColors.Text, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            if (sub != null) Text(sub, style = MaterialTheme.typography.bodySmall, color = CtrlColors.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        }
+        if (selected) Icon(Icons.Outlined.Check, stringResource(R.string.selected), Modifier.size(20.dp), tint = CtrlColors.AccentText)
     }
 }
 

@@ -19,6 +19,7 @@ Part of the [Ctrl series](#the-ctrl-series) by VKNXWorks.
 - **Add and edit** names (with prefix, middle name, suffix and nickname), phone numbers, emails and addresses with their labels (mobile, work, your own label), company and job title, birthdays and other dates (with or without the year), websites, messaging handles (Signal, WhatsApp, Telegram, Matrix, Threema, XMPP, SIP or a service you name), relations (partner, child, mother, manager and more, or your own label), notes and a photo (cropped and resized on the phone)
 - **Safe with every account:** only what changed is written, and only to accounts that sync changes back. Contacts from messengers like WhatsApp or Signal are shown but never changed, so a sync can't undo or duplicate your edits
 - **Choose where new contacts go:** this phone only, or a sync account like DAVx⁵
+- **Labels and account filter:** show all contacts, only those of one account (this phone, DAVx⁵, a messenger, ...) or only one label. Put a contact in labels from its page, and add, rename or delete labels (deleting a label never deletes its contacts). Labels are Android's own contact groups, so they sync with accounts that support them
 - **Favourites** tab, a ringtone per contact, and sharing a contact as a .vcf file
 - **Select several contacts** (long-press) to share, favourite or delete them at once
 - **Import and export .vcf files** (vCard 2.1, 3.0 and 4.0, photos included), with duplicates skipped on import. Opening a .vcf file from your file manager imports it too

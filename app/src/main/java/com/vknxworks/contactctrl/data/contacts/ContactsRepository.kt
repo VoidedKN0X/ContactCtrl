@@ -46,6 +46,12 @@ class ContactsRepository(private val context: Context, private val scope: Corout
     private val _loaded = MutableStateFlow(false)
     val loaded: StateFlow<Boolean> = _loaded
 
+    /** The labels (Android's contact groups) of every account. */
+    private val _groups = MutableStateFlow<List<ContactGroup>>(emptyList())
+    val groups: StateFlow<List<ContactGroup>> = _groups
+
+    val groupsStore = GroupsStore(resolver)
+
     /** Bumped whenever the contacts change, so open detail screens reload. */
     private val _version = MutableStateFlow(0)
     val version: StateFlow<Int> = _version
@@ -68,6 +74,7 @@ class ContactsRepository(private val context: Context, private val scope: Corout
         if (!hasPermission()) return
         if (!observing) {
             runCatching { resolver.registerContentObserver(Contacts.CONTENT_URI, true, observer) }
+            runCatching { resolver.registerContentObserver(ContactsContract.Groups.CONTENT_URI, true, observer) }
             observing = true
         }
         scheduleReload(0)
@@ -80,6 +87,7 @@ class ContactsRepository(private val context: Context, private val scope: Corout
             delay(delayMs)
             val list = withContext(Dispatchers.IO) { runCatching { loadAll() }.getOrNull() }
             if (list != null) _contacts.value = list
+            withContext(Dispatchers.IO) { runCatching { groupsStore.loadAll() }.getOrNull() }?.let { _groups.value = it }
             _loaded.value = true
             _version.value++
         }
@@ -107,6 +115,17 @@ class ContactsRepository(private val context: Context, private val scope: Corout
                 emails.getOrPut(c.getLong(0)) { mutableListOf() } += e
             }
         }
+        val accounts = HashMap<Long, MutableSet<String>>()
+        resolver.query(
+            RawContacts.CONTENT_URI, arrayOf(RawContacts.CONTACT_ID, RawContacts.ACCOUNT_TYPE, RawContacts.ACCOUNT_NAME),
+            "${RawContacts.DELETED}=0", null, null,
+        )?.use { c ->
+            while (c.moveToNext()) {
+                if (c.isNull(0)) continue
+                accounts.getOrPut(c.getLong(0)) { HashSet() } += accountKey(c.getString(1), c.getString(2))
+            }
+        }
+        val groups = runCatching { groupsStore.membershipsByContact() }.getOrDefault(emptyMap())
         val out = ArrayList<ContactSummary>()
         val proj = arrayOf(
             Contacts._ID, Contacts.LOOKUP_KEY, Contacts.DISPLAY_NAME_PRIMARY, Contacts.DISPLAY_NAME_ALTERNATIVE,
@@ -128,6 +147,8 @@ class ContactsRepository(private val context: Context, private val scope: Corout
                     starred = c.getInt(7) != 0,
                     phones = phones[id].orEmpty(),
                     emails = emails[id].orEmpty(),
+                    accounts = accounts[id].orEmpty(),
+                    groups = groups[id].orEmpty(),
                 )
             }
         }
@@ -209,6 +230,7 @@ class ContactsRepository(private val context: Context, private val scope: Corout
         val phones = ArrayList<Field>(); val emails = ArrayList<Field>(); val addresses = ArrayList<Field>()
         val websites = ArrayList<Field>(); val events = ArrayList<Field>()
         val relations = ArrayList<Field>(); val ims = ArrayList<Field>()
+        val memberships = ArrayList<Membership>()
 
         val proj = arrayOf(
             Data._ID, Data.RAW_CONTACT_ID, Data.MIMETYPE, Data.IS_PRIMARY,
@@ -245,6 +267,9 @@ class ContactsRepository(private val context: Context, private val scope: Corout
                     StructuredPostal.CONTENT_ITEM_TYPE -> if (s(4).isNotBlank()) addresses += Field(Kind.ADDRESS, s(4), c.getInt(5), c.getString(6), dataId, raw, primary)
                     Website.CONTENT_ITEM_TYPE -> if (s(4).isNotBlank()) websites += Field(Kind.WEBSITE, s(4), c.getInt(5), c.getString(6), dataId, raw, primary)
                     Event.CONTENT_ITEM_TYPE -> if (s(4).isNotBlank()) events += Field(Kind.EVENT, s(4), c.getInt(5), c.getString(6), dataId, raw, primary)
+                    ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE ->
+                        // DATA1 is GROUP_ROW_ID
+                        if (!c.isNull(4)) memberships += Membership(dataId, raw, c.getLong(4))
                     Relation.CONTENT_ITEM_TYPE -> if (s(4).isNotBlank()) relations += Field(Kind.RELATION, s(4), c.getInt(5), c.getString(6), dataId, raw, primary)
                     IM_ITEM_TYPE -> if (s(4).isNotBlank()) {
                         // DATA5 protocol, DATA6 custom protocol. Old rows may still carry one of the retired
@@ -264,7 +289,7 @@ class ContactsRepository(private val context: Context, private val scope: Corout
             company = company, title = title, orgDataId = orgId, orgRawId = orgRaw,
             note = note, noteDataId = noteId, noteRawId = noteRaw,
             phones = phones, emails = emails, addresses = addresses, websites = websites, events = events,
-            relations = relations, ims = ims,
+            relations = relations, ims = ims, memberships = memberships,
             photoUri = photo, starred = starred, ringtone = ringtone, raws = raws,
         )
     }
