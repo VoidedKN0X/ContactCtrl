@@ -4,6 +4,14 @@ What changed in each ContactCtrl release. Every release on the [Releases page](h
 
 To publish a new version: bump `versionCode` and `versionName` in `app/build.gradle.kts`, add a section here, and push to `main`. Pushes without a version bump only build; they don't make a release.
 
+## Unreleased
+
+Changes on `main` that aren't in a release yet. They ship with the next version.
+
+### Fixed
+
+- **Dutch: one name for "Hide in screenshots".** Two Dutch texts on the Settings page (the settings-file and backup notes) called the switch "Verbergen in screenshots" while the switch itself is called "Verbergen in schermafbeeldingen". They now use the same name.
+
 ## v0.4.0 (2026-11-21)
 
 Built and checked by CI only: nothing in this release had been run on a phone when it was published.

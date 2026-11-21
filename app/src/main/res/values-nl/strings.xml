@@ -296,7 +296,7 @@
     <string name="settings_export_sub">Bewaar de instellingen van ContactCtrl in een bestand</string>
     <string name="settings_import">Instellingen importeren</string>
     <string name="settings_import_sub">Gebruik de instellingen uit een bestand dat je exporteerde</string>
-    <string name="settings_file_footer">Alleen instellingen. Nooit je contacten, privécontacten, de pincode van de app-vergrendeling of de back-upmap. Een import zet Verbergen in screenshots of Verbergen in recente apps nooit uit, en verandert de app-vergrendeling niet.</string>
+    <string name="settings_file_footer">Alleen instellingen. Nooit je contacten, privécontacten, de pincode van de app-vergrendeling of de back-upmap. Een import zet Verbergen in schermafbeeldingen of Verbergen in recente apps nooit uit, en verandert de app-vergrendeling niet.</string>
     <string name="settings_file_saved">Instellingen opgeslagen</string>
     <string name="settings_file_failed">Het bestand kon niet bewaard worden</string>
     <string name="settings_file_invalid">Dit is geen instellingenbestand van ContactCtrl, of het komt van een nieuwere versie.</string>
