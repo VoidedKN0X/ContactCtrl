@@ -82,6 +82,7 @@ fun SettingsScreen() {
             BackupGroup(settings)
             BirthdayGroup(settings)
             PrivacyAndSecurityGroup(settings)
+            SettingsFileGroup(settings)
         }
     }
 }

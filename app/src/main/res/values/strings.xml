@@ -324,4 +324,20 @@
     <string name="private_moved_out">Moved to your phone contacts</string>
     <string name="private_move_failed">Couldn\'t move the contact. The private copy is kept.</string>
     <string name="private_delete_body">The private contact is deleted for good. There is no copy anywhere else.</string>
+
+    <!-- Settings file -->
+    <string name="group_settings_file">Settings file</string>
+    <string name="settings_export">Export settings</string>
+    <string name="settings_export_sub">Save ContactCtrl\'s settings in a file</string>
+    <string name="settings_import">Import settings</string>
+    <string name="settings_import_sub">Use the settings from a file you exported</string>
+    <string name="settings_file_footer">Only settings. Never your contacts, private contacts, the app lock\'s PIN or the backup folder. An import never turns off Hide in screenshots or Hide in recent apps, and doesn\'t change the app lock.</string>
+    <string name="settings_file_saved">Settings saved</string>
+    <string name="settings_file_failed">Couldn\'t save the file</string>
+    <string name="settings_file_invalid">This isn\'t a ContactCtrl settings file, or it comes from a newer version.</string>
+    <string name="settings_file_same">Your settings already match this file.</string>
+    <string name="settings_import_title">Replace these settings?</string>
+    <string name="settings_import_body">These settings will be replaced by the ones in the file:\n\n%1$s</string>
+    <string name="settings_import_replace">Replace</string>
+    <string name="settings_imported">Settings imported</string>
 </resources>
