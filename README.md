@@ -16,7 +16,7 @@ Part of the [Ctrl series](#the-ctrl-series) by VKNXWorks.
 - **Fast search** over names, nicknames, phone numbers (any part, with or without the country code) and email addresses. Accents don't matter: "zoe" finds "Zoë"
 - **Alphabetical list** with letter headers and your favourites on top; first or last name first, sorted by first or last name
 - **Contact page** with one-tap call, message and email, every number, email, address (opens in your maps app), website, date and note. Long-press anything to copy it
-- **Add and edit** names (with prefix, middle name, suffix and nickname), phone numbers, emails and addresses with their labels (mobile, work, your own label), company and job title, birthdays and other dates (with or without the year), websites, notes and a photo (cropped and resized on the phone)
+- **Add and edit** names (with prefix, middle name, suffix and nickname), phone numbers, emails and addresses with their labels (mobile, work, your own label), company and job title, birthdays and other dates (with or without the year), websites, messaging handles (Signal, WhatsApp, Telegram, Matrix, Threema, XMPP, SIP or a service you name), relations (partner, child, mother, manager and more, or your own label), notes and a photo (cropped and resized on the phone)
 - **Safe with every account:** only what changed is written, and only to accounts that sync changes back. Contacts from messengers like WhatsApp or Signal are shown but never changed, so a sync can't undo or duplicate your edits
 - **Choose where new contacts go:** this phone only, or a sync account like DAVx⁵
 - **Favourites** tab, a ringtone per contact, and sharing a contact as a .vcf file

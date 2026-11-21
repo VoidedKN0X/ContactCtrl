@@ -70,7 +70,24 @@ data class RawInfo(
     val writable: Boolean,
 )
 
-enum class Kind { PHONE, EMAIL, ADDRESS, WEBSITE, EVENT }
+enum class Kind { PHONE, EMAIL, ADDRESS, WEBSITE, EVENT, RELATION, IM }
+
+/**
+ * Messaging handles (Signal, Matrix, ...) are stored the way Android asks since API 31: the protocol is always
+ * "custom" (-1) and the service name goes in its own column. [Field.type] for [Kind.IM] is an index into
+ * [IM_SERVICES] (0: a name you type yourself, kept in [Field.label]).
+ */
+val IM_SERVICES: List<String> = listOf("", "Signal", "WhatsApp", "Telegram", "Matrix", "Threema", "XMPP", "SIP")
+
+/** The service name a messaging handle is saved with. */
+fun imService(f: Field): String = if (f.type in 1 until IM_SERVICES.size) IM_SERVICES[f.type] else f.label.orEmpty().trim()
+
+/** [Field.type] and [Field.label] for a saved service name: a known service picks its preset, anything else is custom. */
+fun imTypeOf(service: String?): Pair<Int, String?> {
+    val s = service?.trim().orEmpty()
+    val i = IM_SERVICES.indexOfFirst { it.isNotEmpty() && it.equals(s, ignoreCase = true) }
+    return if (i > 0) i to null else 0 to s.ifEmpty { null }
+}
 
 /** One phone number, email, address, website or date of a contact. */
 data class Field(
@@ -118,6 +135,10 @@ data class ContactDetail(
     val addresses: List<Field>,
     val websites: List<Field>,
     val events: List<Field>,
+    /** People this contact is related to (partner, mother, manager, ...). */
+    val relations: List<Field> = emptyList(),
+    /** Messaging handles (Signal, Matrix, Telegram, ...). */
+    val ims: List<Field> = emptyList(),
     val photoUri: String?,
     val starred: Boolean,
     val ringtone: String?,
@@ -139,13 +160,15 @@ data class ContactDraft(
     val addresses: List<Field> = emptyList(),
     val websites: List<Field> = emptyList(),
     val events: List<Field> = emptyList(),
+    val relations: List<Field> = emptyList(),
+    val ims: List<Field> = emptyList(),
     /** New photo as JPEG bytes, or null to keep it. */
     val newPhoto: ByteArray? = null,
     val removePhoto: Boolean = false,
 ) {
     val isEmpty: Boolean
         get() = name.isBlank && nickname.isBlank() && company.isBlank() &&
-            (phones + emails + addresses + websites).all { it.value.isBlank() }
+            (phones + emails + addresses + websites + ims).all { it.value.isBlank() }
 
     companion object {
         fun from(d: ContactDetail) = ContactDraft(
@@ -159,15 +182,18 @@ data class ContactDraft(
             addresses = d.addresses,
             websites = d.websites,
             events = d.events,
+            relations = d.relations,
+            ims = d.ims,
         )
     }
 
     override fun equals(other: Any?): Boolean = other is ContactDraft && name == other.name && nickname == other.nickname &&
         company == other.company && title == other.title && note == other.note && phones == other.phones &&
         emails == other.emails && addresses == other.addresses && websites == other.websites && events == other.events &&
+        relations == other.relations && ims == other.ims &&
         removePhoto == other.removePhoto && (newPhoto === other.newPhoto || (newPhoto != null && other.newPhoto != null && newPhoto.contentEquals(other.newPhoto)))
 
-    override fun hashCode(): Int = listOf(name, nickname, company, title, note, phones, emails, addresses, websites, events, removePhoto).hashCode()
+    override fun hashCode(): Int = listOf(name, nickname, company, title, note, phones, emails, addresses, websites, events, relations, ims, removePhoto).hashCode()
 }
 
 /** Where a new contact is saved: the phone itself (null), or a sync account. */

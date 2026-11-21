@@ -8,6 +8,10 @@ To publish a new version: bump `versionCode` and `versionName` in `app/build.gra
 
 Changes on `main` that aren't in a release yet. They ship with the next version.
 
+### New
+
+- **Messaging handles and relations on a contact.** When you add or edit a contact there are two new sections. *Messaging* holds handles such as a Signal number, a Matrix ID or a Telegram username, each with its service: Signal, WhatsApp, Telegram, Matrix, Threema, XMPP, SIP, or a name you type. *Relations* holds the people a contact is related to (spouse, partner, child, mother, father, sister, brother, friend, manager, assistant, "referred by" and more, or your own label). Both show on the contact's page under About; long-press one to copy it. They are saved in Android's own contacts storage the standard way (a messaging handle with the service name in Android's "custom protocol" field, as Android has asked since version 12), so other contacts apps and sync accounts that support these fields see them too. Handles saved by older apps with one of Android's retired service numbers (AIM, Skype, Jabber, ...) show with that name and are only rewritten if you change them. Not yet tried on a phone.
+
 ### Project
 
 - **Checksum list regenerated without the old entries.** `gradle/verification-metadata.xml` was regenerated on CI with the fixed workflow and committed exactly as printed (its SHA-256 matches the log). It now lists only the 378 components the build downloads today; the leftovers from earlier library and build-tool versions are gone.

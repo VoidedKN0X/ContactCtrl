@@ -11,6 +11,7 @@ import android.net.Uri
 import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.ContactsContract.CommonDataKinds.Event
 import android.provider.ContactsContract.CommonDataKinds.Phone
+import android.provider.ContactsContract.CommonDataKinds.Relation
 import android.provider.ContactsContract.CommonDataKinds.StructuredPostal
 import android.provider.ContactsContract.CommonDataKinds.Website
 import android.provider.Settings
@@ -47,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.vknxworks.contactctrl.R
+import com.vknxworks.contactctrl.data.contacts.IM_SERVICES
 import com.vknxworks.contactctrl.data.contacts.Kind
 import com.vknxworks.contactctrl.ui.components.MessageView
 import com.vknxworks.contactctrl.ui.lock.AppLock
@@ -187,6 +189,9 @@ fun typeLabel(context: Context, kind: Kind, type: Int, label: String?): String =
         Website.TYPE_CUSTOM -> label?.ifBlank { null } ?: context.getString(R.string.web_other)
         else -> context.getString(R.string.web_other)
     }
+    Kind.RELATION -> Relation.getTypeLabel(context.resources, type, label).toString()
+    // Service names (Signal, Matrix, ...) are product names and stay as they are in every language.
+    Kind.IM -> if (type in 1 until IM_SERVICES.size) IM_SERVICES[type] else label?.ifBlank { null } ?: context.getString(R.string.im_other)
 }
 
 /** Types offered when adding or editing a field. 0 is "custom". */
@@ -196,6 +201,12 @@ fun typeChoices(kind: Kind): List<Int> = when (kind) {
     Kind.ADDRESS -> listOf(StructuredPostal.TYPE_HOME, StructuredPostal.TYPE_WORK, StructuredPostal.TYPE_OTHER, 0)
     Kind.WEBSITE -> listOf(Website.TYPE_HOMEPAGE, Website.TYPE_WORK, Website.TYPE_BLOG, Website.TYPE_HOME, Website.TYPE_OTHER)
     Kind.EVENT -> listOf(Event.TYPE_BIRTHDAY, Event.TYPE_ANNIVERSARY, Event.TYPE_OTHER, 0)
+    Kind.RELATION -> listOf(
+        Relation.TYPE_SPOUSE, Relation.TYPE_PARTNER, Relation.TYPE_DOMESTIC_PARTNER, Relation.TYPE_CHILD, Relation.TYPE_MOTHER,
+        Relation.TYPE_FATHER, Relation.TYPE_PARENT, Relation.TYPE_SISTER, Relation.TYPE_BROTHER, Relation.TYPE_RELATIVE,
+        Relation.TYPE_FRIEND, Relation.TYPE_MANAGER, Relation.TYPE_ASSISTANT, Relation.TYPE_REFERRED_BY, 0,
+    )
+    Kind.IM -> IM_SERVICES.indices.drop(1) + 0
 }
 
 fun defaultType(kind: Kind): Int = typeChoices(kind).first()

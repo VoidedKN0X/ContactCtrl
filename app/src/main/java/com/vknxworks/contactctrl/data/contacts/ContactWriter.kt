@@ -13,6 +13,7 @@ import android.provider.ContactsContract.CommonDataKinds.Note
 import android.provider.ContactsContract.CommonDataKinds.Organization
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsContract.CommonDataKinds.Photo
+import android.provider.ContactsContract.CommonDataKinds.Relation
 import android.provider.ContactsContract.CommonDataKinds.StructuredName
 import android.provider.ContactsContract.CommonDataKinds.StructuredPostal
 import android.provider.ContactsContract.CommonDataKinds.Website
@@ -122,6 +123,8 @@ class ContactWriter(private val resolver: ContentResolver) {
             list(original.addresses, draft.addresses)
             list(original.websites, draft.websites)
             list(original.events, draft.events)
+            list(original.relations, draft.relations)
+            list(original.ims, draft.ims)
 
             if (draft.removePhoto || draft.newPhoto != null) {
                 // Replace the photo in every raw contact we may change, so the new one is the one that shows.
@@ -161,7 +164,7 @@ class ContactWriter(private val resolver: ContentResolver) {
         contacts.count { c -> runCatching { resolver.delete(Contacts.getLookupUri(c.id, c.lookupKey), null, null) > 0 }.getOrDefault(false) }
     }
 
-    private fun ContactDraft.allFields(): List<Field> = phones + emails + addresses + websites + events
+    private fun ContactDraft.allFields(): List<Field> = phones + emails + addresses + websites + events + relations + ims
 
     private fun nameValues(n: NameParts) = ContentValues().apply {
         put(StructuredName.DISPLAY_NAME, n.display)
@@ -179,6 +182,15 @@ class ContactWriter(private val resolver: ContentResolver) {
     }
 
     private fun fieldValues(f: Field, update: Boolean = false) = ContentValues().apply {
+        if (f.kind == Kind.IM) {
+            // Android's rule since API 31: protocol always "custom", the service name in its own column.
+            put(Data.DATA1, f.value.trim())
+            put(Data.DATA2, IM_TYPE_OTHER)
+            putNull(Data.DATA3)
+            put(Data.DATA5, IM_PROTOCOL_CUSTOM)
+            put(Data.DATA6, imService(f).ifEmpty { null })
+            return@apply
+        }
         put(Data.DATA1, f.value.trim())
         put(Data.DATA2, f.type)
         put(Data.DATA3, if (f.type == 0) f.label?.trim()?.ifEmpty { null } else null)
@@ -195,6 +207,11 @@ class ContactWriter(private val resolver: ContentResolver) {
             Kind.ADDRESS -> StructuredPostal.CONTENT_ITEM_TYPE
             Kind.WEBSITE -> Website.CONTENT_ITEM_TYPE
             Kind.EVENT -> Event.CONTENT_ITEM_TYPE
+            Kind.RELATION -> Relation.CONTENT_ITEM_TYPE
+            Kind.IM -> IM_ITEM_TYPE
         }
+
+        /** `CommonDataKinds.Im.TYPE_OTHER`. */
+        private const val IM_TYPE_OTHER = 3
     }
 }

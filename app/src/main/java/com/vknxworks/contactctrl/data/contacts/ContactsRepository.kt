@@ -15,6 +15,7 @@ import android.provider.ContactsContract.CommonDataKinds.Nickname
 import android.provider.ContactsContract.CommonDataKinds.Note
 import android.provider.ContactsContract.CommonDataKinds.Organization
 import android.provider.ContactsContract.CommonDataKinds.Phone
+import android.provider.ContactsContract.CommonDataKinds.Relation
 import android.provider.ContactsContract.CommonDataKinds.StructuredName
 import android.provider.ContactsContract.CommonDataKinds.StructuredPostal
 import android.provider.ContactsContract.CommonDataKinds.Website
@@ -207,6 +208,7 @@ class ContactsRepository(private val context: Context, private val scope: Corout
         var note = ""; var noteId: Long? = null; var noteRaw: Long? = null
         val phones = ArrayList<Field>(); val emails = ArrayList<Field>(); val addresses = ArrayList<Field>()
         val websites = ArrayList<Field>(); val events = ArrayList<Field>()
+        val relations = ArrayList<Field>(); val ims = ArrayList<Field>()
 
         val proj = arrayOf(
             Data._ID, Data.RAW_CONTACT_ID, Data.MIMETYPE, Data.IS_PRIMARY,
@@ -243,6 +245,15 @@ class ContactsRepository(private val context: Context, private val scope: Corout
                     StructuredPostal.CONTENT_ITEM_TYPE -> if (s(4).isNotBlank()) addresses += Field(Kind.ADDRESS, s(4), c.getInt(5), c.getString(6), dataId, raw, primary)
                     Website.CONTENT_ITEM_TYPE -> if (s(4).isNotBlank()) websites += Field(Kind.WEBSITE, s(4), c.getInt(5), c.getString(6), dataId, raw, primary)
                     Event.CONTENT_ITEM_TYPE -> if (s(4).isNotBlank()) events += Field(Kind.EVENT, s(4), c.getInt(5), c.getString(6), dataId, raw, primary)
+                    Relation.CONTENT_ITEM_TYPE -> if (s(4).isNotBlank()) relations += Field(Kind.RELATION, s(4), c.getInt(5), c.getString(6), dataId, raw, primary)
+                    IM_ITEM_TYPE -> if (s(4).isNotBlank()) {
+                        // DATA5 protocol, DATA6 custom protocol. Old rows may still carry one of the retired
+                        // protocol numbers (0 AIM ... 8 NetMeeting); those keep their old name as a custom label.
+                        val protocol = if (c.isNull(8)) IM_PROTOCOL_CUSTOM else c.getInt(8)
+                        val service = if (protocol == IM_PROTOCOL_CUSTOM) c.getString(9) else LEGACY_IM_NAMES.getOrNull(protocol)
+                        val (type, label) = imTypeOf(service)
+                        ims += Field(Kind.IM, s(4), type, label, dataId, raw, primary)
+                    }
                 }
             }
         }
@@ -253,6 +264,7 @@ class ContactsRepository(private val context: Context, private val scope: Corout
             company = company, title = title, orgDataId = orgId, orgRawId = orgRaw,
             note = note, noteDataId = noteId, noteRawId = noteRaw,
             phones = phones, emails = emails, addresses = addresses, websites = websites, events = events,
+            relations = relations, ims = ims,
             photoUri = photo, starred = starred, ringtone = ringtone, raws = raws,
         )
     }
@@ -281,5 +293,12 @@ class ContactsRepository(private val context: Context, private val scope: Corout
         observing = false
     }
 }
+
+/** Android's instant-messaging rows (`CommonDataKinds.Im`, deprecated as a class in API 35 but still stored). */
+internal const val IM_ITEM_TYPE = "vnd.android.cursor.item/im"
+internal const val IM_PROTOCOL_CUSTOM = -1
+
+/** The names of the protocol numbers Android retired in API 31, for rows saved by older apps. */
+private val LEGACY_IM_NAMES = listOf("AIM", "MSN", "Yahoo", "Skype", "QQ", "Google Talk", "ICQ", "Jabber", "NetMeeting")
 
 internal fun Cursor.str(col: String): String? = getColumnIndex(col).let { if (it >= 0) getString(it) else null }

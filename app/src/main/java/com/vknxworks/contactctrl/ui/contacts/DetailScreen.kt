@@ -37,6 +37,8 @@ import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Forum
+import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.LibraryMusic
 import androidx.compose.material.icons.outlined.Lock
@@ -182,7 +184,7 @@ fun DetailScreen(id: Long, key: String) {
                 if (d.addresses.isNotEmpty()) Group(stringResource(R.string.group_addresses)) {
                     d.addresses.forEach { f -> FieldRow(f, Icons.Outlined.Place, onClick = { map(context, f.value) }) }
                 }
-                if (d.company.isNotBlank() || d.title.isNotBlank() || d.nickname.isNotBlank() || d.websites.isNotEmpty() || d.events.isNotEmpty()) {
+                if (d.company.isNotBlank() || d.title.isNotBlank() || d.nickname.isNotBlank() || d.websites.isNotEmpty() || d.events.isNotEmpty() || d.ims.isNotEmpty() || d.relations.isNotEmpty()) {
                     Group(stringResource(R.string.group_about_contact)) {
                         if (d.company.isNotBlank() || d.title.isNotBlank()) {
                             GroupRow(listOf(d.title, d.company).filter { it.isNotBlank() }.joinToString(" · "), stringResource(R.string.field_work), icon = Icons.Outlined.Work)
@@ -190,6 +192,9 @@ fun DetailScreen(id: Long, key: String) {
                         if (d.nickname.isNotBlank()) GroupRow(d.nickname, stringResource(R.string.field_nickname))
                         d.events.forEach { f -> FieldRow(f, Icons.Outlined.Cake, display = formatEventDate(f.value), onClick = null) }
                         d.websites.forEach { f -> FieldRow(f, Icons.Outlined.Language, onClick = { web(context, f.value) }) }
+                        // Messaging handles and relations: long-press copies, like every other field.
+                        d.ims.forEach { f -> FieldRow(f, Icons.Outlined.Forum, onClick = null) }
+                        d.relations.forEach { f -> FieldRow(f, Icons.Outlined.People, onClick = null) }
                     }
                 }
                 if (d.note.isNotBlank()) Group(stringResource(R.string.field_note)) {

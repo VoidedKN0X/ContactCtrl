@@ -148,7 +148,7 @@ fun EditScreen(id: Long, key: String, prefill: Boolean) {
             if (o == null || !o.writable) { loadFailed = true; return@LaunchedEffect }
             val writable = o.raws.filter { it.writable }.map { it.id }.toSet()
             fun List<Field>.mine() = filter { it.rawContactId in writable }
-            val o2 = o.copy(phones = o.phones.mine(), emails = o.emails.mine(), addresses = o.addresses.mine(), websites = o.websites.mine(), events = o.events.mine())
+            val o2 = o.copy(phones = o.phones.mine(), emails = o.emails.mine(), addresses = o.addresses.mine(), websites = o.websites.mine(), events = o.events.mine(), relations = o.relations.mine(), ims = o.ims.mine())
             original = o2
             val d = ContactDraft.from(o2).let { base ->
                 // "Add to contact" from another app: append what it sent.
@@ -156,7 +156,7 @@ fun EditScreen(id: Long, key: String, prefill: Boolean) {
                 if (extra == null) base else base.copy(
                     phones = base.phones + extra.phones, emails = base.emails + extra.emails,
                     addresses = base.addresses + extra.addresses, websites = base.websites + extra.websites,
-                    events = base.events + extra.events,
+                    events = base.events + extra.events, ims = base.ims + extra.ims,
                     company = base.company.ifBlank { extra.company }, title = base.title.ifBlank { extra.title },
                     note = base.note.ifBlank { extra.note },
                 )
@@ -194,6 +194,8 @@ fun EditScreen(id: Long, key: String, prefill: Boolean) {
                 addresses = draft.addresses.filter { it.value.isNotBlank() || it.dataId != null },
                 websites = draft.websites.filter { it.value.isNotBlank() || it.dataId != null },
                 events = draft.events.filter { it.value.isNotBlank() || it.dataId != null },
+                relations = draft.relations.filter { it.value.isNotBlank() || it.dataId != null },
+                ims = draft.ims.filter { it.value.isNotBlank() || it.dataId != null },
             )
             val o = original
             val result = if (o == null) c.writer.create(clean, account) else c.writer.update(o, clean)
@@ -281,6 +283,8 @@ fun EditScreen(id: Long, key: String, prefill: Boolean) {
 
                 FieldList(Kind.EVENT, R.string.group_dates, R.string.add_date, draft.events) { draft = draft.copy(events = it) }
                 FieldList(Kind.WEBSITE, R.string.group_websites, R.string.add_website, draft.websites) { draft = draft.copy(websites = it) }
+                FieldList(Kind.IM, R.string.group_ims, R.string.add_im, draft.ims) { draft = draft.copy(ims = it) }
+                FieldList(Kind.RELATION, R.string.group_relations, R.string.add_relation, draft.relations) { draft = draft.copy(relations = it) }
 
                 Group(stringResource(R.string.field_note)) {
                     CtrlTextField(
@@ -388,7 +392,7 @@ private fun FieldList(kind: Kind, title: Int, addLabel: Int, fields: List<Field>
                                         Kind.WEBSITE -> KeyboardType.Uri
                                         else -> KeyboardType.Text
                                     },
-                                    capitalization = if (kind == Kind.ADDRESS) KeyboardCapitalization.Words else KeyboardCapitalization.None,
+                                    capitalization = if (kind == Kind.ADDRESS || kind == Kind.RELATION) KeyboardCapitalization.Words else KeyboardCapitalization.None,
                                 ),
                                 modifier = Modifier.fillMaxWidth(),
                             )

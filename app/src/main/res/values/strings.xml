@@ -211,4 +211,11 @@
         <item quantity="one">%d contact exported</item>
         <item quantity="other">%d contacts exported</item>
     </plurals>
+
+    <!-- Messaging handles and relations -->
+    <string name="group_ims">Messaging</string>
+    <string name="add_im">Add messaging handle</string>
+    <string name="im_other">Messaging</string>
+    <string name="group_relations">Relations</string>
+    <string name="add_relation">Add relation</string>
 </resources>
