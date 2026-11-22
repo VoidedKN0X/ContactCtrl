@@ -4,6 +4,19 @@ What changed in each ContactCtrl release. Every release on the [Releases page](h
 
 To publish a new version: bump `versionCode` and `versionName` in `app/build.gradle.kts`, add a section here, and push to `main`. Pushes without a version bump only build; they don't make a release.
 
+## Unreleased
+
+Built and checked by CI only: nothing here has been run on a phone yet.
+
+### Fixed
+
+- **No screenshot of ContactCtrl in the first moment after it starts.** With **Hide in screenshots** on and the app lock off, the first frames after a cold start could be drawn before ContactCtrl had read that setting, so they weren't hidden from screenshots, screen recordings and the Recents preview. ContactCtrl now stays hidden until your settings are read (a few milliseconds), then follows the setting as before.
+
+### Security
+
+- **Opening a .vcf file can only go through the checked route.** ContactCtrl has a separate entry for .vcf files where Android 15 and later refuse a file that the sending app can't read itself. Another app could skip that check on Android 15 by sending the file straight to ContactCtrl's main screen. The main screen now only imports the file that the checked entry has just handed to it, as DateCtrl already does. Opening a .vcf file from Files, a mail app or a share works as before.
+- **A settings file can no longer make the app lock weaker.** Importing a settings file could set **Lock again** to a later choice (for example from "Immediately" to "Only when the app restarts"). An import now only keeps the sooner of the two, like **Hide in screenshots** and **Hide in recent apps**, which it can only turn on. If the file asks for a later choice, your current one stays and isn't listed as a change.
+
 ## v0.5.0 (2026-11-21)
 
 Built and checked by CI only: nothing in this release had been run on a phone when it was published.

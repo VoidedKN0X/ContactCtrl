@@ -40,6 +40,9 @@ class AppContainer(val context: Context) {
     /** What another app asked to open; the main screen picks it up. */
     val pending = MutableStateFlow<Launch?>(null)
 
+    /** The .vcf link ImportActivity just checked and handed to MainActivity; the only one it will import. */
+    @Volatile var pendingImport: android.net.Uri? = null
+
     /** Fields another app filled in, for the edit screen ("Add to contacts"). */
     var prefill: ContactDraft? = null
 

@@ -34,9 +34,10 @@ sealed interface Launch {
             return when (intent.action) {
                 Intent.ACTION_VIEW -> when {
                     data == null -> null
-                    // Only content:// links. ContactCtrl has no storage permission, so a file:// path could only
-                    // point into its own private files.
-                    isVCard(intent) -> if (data.scheme.equals("content", ignoreCase = true)) Import(data) else null
+                    // Never from an intent: a .vcf file is only imported through ImportActivity, where Android checks
+                    // that the sending app can read it, and MainActivity's handshake with it (see MainActivity.take).
+                    // An app that starts MainActivity directly with a .vcf link gets nothing.
+                    isVCard(intent) -> null
                     data.authority == ContactsContract.AUTHORITY -> View(data)
                     else -> null
                 }

@@ -46,7 +46,7 @@ data class SettingsBackup(
         /** [next]'s file-controlled settings on top of [cur] (what is saved when you confirm). */
         fun decodeApplied(cur: AppSettings, next: AppSettings): AppSettings = cur.copy(
             nameOrder = next.nameOrder, sortBy = next.sortBy, showNumbers = next.showNumbers, tapToCall = next.tapToCall,
-            defaultAccount = next.defaultAccount, lockTimeout = next.lockTimeout,
+            defaultAccount = next.defaultAccount, lockTimeout = stricterLockTimeout(cur.lockTimeout, next.lockTimeout),
             hideScreenshots = cur.hideScreenshots || next.hideScreenshots, hideRecents = cur.hideRecents || next.hideRecents,
             birthdayReminders = next.birthdayReminders, birthdayHour = next.birthdayHour,
             backupEvery = next.backupEvery, backupKeep = next.backupKeep,
@@ -59,7 +59,7 @@ data class SettingsBackup(
 
     /**
      * [current] with this file applied. Safety rules: "Hide in screenshots" and "Hide in recent apps" can only be
-     * turned on by a file, never off; birthday reminders are only turned on when [canNotify]; the backup folder and
+     * turned on by a file, never off; "Lock again" can only become sooner, never later; birthday reminders are only turned on when [canNotify]; the backup folder and
      * everything outside this file stay as they are.
      */
     fun applyTo(current: AppSettings, canNotify: Boolean): AppSettings = current.copy(
@@ -68,7 +68,7 @@ data class SettingsBackup(
         showNumbers = showNumbers ?: current.showNumbers,
         tapToCall = tapToCall ?: current.tapToCall,
         defaultAccount = defaultAccount ?: current.defaultAccount,
-        lockTimeout = enumOr(lockTimeout, current.lockTimeout),
+        lockTimeout = stricterLockTimeout(current.lockTimeout, enumOr(lockTimeout, current.lockTimeout)),
         hideScreenshots = current.hideScreenshots || hideScreenshots == true,
         hideRecents = current.hideRecents || hideRecents == true,
         birthdayReminders = when (birthdayReminders) {
@@ -80,6 +80,15 @@ data class SettingsBackup(
         backupEvery = enumOr(backupEvery, current.backupEvery),
         backupKeep = backupKeep?.takeIf { it in 1..50 } ?: current.backupKeep,
     )
+}
+
+/**
+ * Of two "Lock again" choices, the one that locks sooner ("only when the app restarts" is the latest). A settings
+ * file may make the app lock stricter, never weaker.
+ */
+internal fun stricterLockTimeout(current: LockTimeout, fromFile: LockTimeout): LockTimeout {
+    fun lateness(t: LockTimeout) = if (t.millis < 0) Long.MAX_VALUE else t.millis
+    return if (lateness(fromFile) < lateness(current)) fromFile else current
 }
 
 private inline fun <reified E : Enum<E>> enumOr(name: String?, default: E): E =

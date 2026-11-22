@@ -36,6 +36,14 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun take(intent: Intent?) {
+        // A .vcf file handed over by ImportActivity (after Android checked the sender could read it).
+        val expected = container.pendingImport
+        val shared = intent?.clipData?.takeIf { it.itemCount > 0 }?.getItemAt(0)?.uri
+        if (expected != null && shared == expected) {
+            container.pendingImport = null
+            container.pending.value = Launch.Import(expected)
+            return
+        }
         Launch.from(intent)?.let { container.pending.value = it }
     }
 }
@@ -47,7 +55,8 @@ class MainActivity : ComponentActivity() {
  */
 fun ComponentActivity.secureBeforeFirstFrame() {
     val c = container
-    if (c.settings.settings.value.hideScreenshots || lockCovering(c.vault)) {
+    // Until the saved settings are read, "Hide in screenshots" counts as on (it may be).
+    if (!c.settings.loaded.value || c.settings.settings.value.hideScreenshots || lockCovering(c.vault)) {
         window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
     }
 }
@@ -65,9 +74,12 @@ fun CtrlWindow(activity: ComponentActivity, content: @Composable () -> Unit) {
         activity.enableEdgeToEdge(statusBarStyle = bars, navigationBarStyle = bars)
         onDispose { }
     }
+    // Read before the settings: once this is true, the settings read below are the saved ones.
+    val loaded by c.settings.loaded.collectAsStateWithLifecycle()
     val settings by c.settings.settings.collectAsStateWithLifecycle()
-    // "Hide in screenshots": FLAG_SECURE (also blanks the Recents preview). Always on while a lock or PIN screen shows.
-    val secure = settings.hideScreenshots || lockCovering(c.vault)
+    // "Hide in screenshots": FLAG_SECURE (also blanks the Recents preview). Always on while a lock or PIN screen
+    // shows, and until the saved settings are known.
+    val secure = !loaded || settings.hideScreenshots || lockCovering(c.vault)
     // "Hide in recent apps": a blank Recents card. Always with the app lock on.
     val blankRecents = settings.hideRecents || c.vault.enabled
     LaunchedEffect(secure, blankRecents) {
